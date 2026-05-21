@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "openviking-search-skill"
+version = "0.3.0"
+description = "An OpenViking local corpus search skill with retrieval research workflows."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "httpx>=0.28",
+    "PyYAML>=6",
+]
+
+[project.optional-dependencies]
+news = [
+    "feedparser>=6",
+    "trafilatura>=2",
+]
+
+[project.scripts]
+ov-search-skill = "ov_search_skill.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

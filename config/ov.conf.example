@@ -1,0 +1,26 @@
+{
+  "server": {
+    "host": "127.0.0.1",
+    "port": 1933
+  },
+  "storage": {
+    "workspace": "D:/Github/OpenViking_Search_Skill/workspace"
+  },
+  "embedding": {
+    "dense": {
+      "api_base": "https://ark.cn-beijing.volces.com/api/v3",
+      "api_key": "YOUR_VOLCENGINE_API_KEY",
+      "provider": "volcengine",
+      "dimension": 1024,
+      "model": "doubao-embedding-vision-251215"
+    },
+    "max_concurrent": 10
+  },
+  "vlm": {
+    "api_base": "https://ark.cn-beijing.volces.com/api/v3",
+    "api_key": "YOUR_VOLCENGINE_API_KEY",
+    "provider": "volcengine",
+    "model": "doubao-seed-2-0-pro-260215",
+    "max_concurrent": 100
+  }
+}

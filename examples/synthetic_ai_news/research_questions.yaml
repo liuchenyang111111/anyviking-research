@@ -1,0 +1,33 @@
+topic_title: "AI 搜索与端侧智能产品趋势：合成资料检索草稿"
+ov_root_uri: "viking://resources/synthetic-ai-news"
+
+sections:
+  - id: market
+    heading: "AI 搜索市场方向"
+    question: |
+      请检索 AI 搜索产品从通用问答走向任务型检索的趋势，
+      并说明公网搜索、本地语料检索和企业工作流分别解决什么问题。
+
+  - id: edge
+    heading: "端侧大模型与本地检索"
+    question: |
+      请检索端侧大模型设备的优势、限制，
+      以及本地语料检索为什么能成为端侧 AI 的补充。
+
+  - id: agent_workflow
+    heading: "Agent 工作流与可追溯引用"
+    question: |
+      请检索 Agent 浏览器和自动化调研工作流为什么需要保存检索过程、
+      URI 引用和中间结果。
+
+  - id: governance
+    heading: "数据治理与开源安全"
+    question: |
+      请检索本地检索项目在隐私、API key、workspace、
+      demo 语料和开源发布方面需要注意哪些边界。
+
+  - id: roadmap
+    heading: "产品路线与后续集成"
+    question: |
+      请检索为什么产品路线建议先做可靠检索和 research workflow，
+      再评估 OpenVikingBot、MCP 或 AnySearch。
