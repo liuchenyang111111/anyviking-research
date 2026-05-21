@@ -126,8 +126,9 @@ Python 3.12
 v0.1 通用检索 Skill：已完成基础链路
 v0.2 新闻调研 workflow：已完成轻量检索草稿
 v0.3 开源可复现合成语料 demo
-v0.4 AnySearch connector
-v0.5 可选 OpenVikingBot / MCP 集成
+v0.4 引用质量增强：去重、引用统计、证据覆盖检查
+v0.5 可插拔 AnySearch connector
+v0.6 可插拔 MCP / OpenVikingBot adapter
 ```
 
 OpenVikingBot 暂时不作为核心依赖，只作为后续增强方向。

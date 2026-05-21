@@ -7,6 +7,7 @@
 - Added `--json-output` for `ov-search-skill research`.
 - Added GitHub Actions test workflow.
 - Removed unused optional news dependencies from package metadata.
+- Added project review and next-stage plan.
 
 ## 0.3.0
 

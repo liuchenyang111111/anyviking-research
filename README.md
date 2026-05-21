@@ -284,6 +284,7 @@ AnySearch 搜公网
 - [FAQ](docs/faq.md)
 - [项目基础概念说明](docs/project_basics.md)
 - [检索型调研 Workflow](docs/research_workflow.md)
+- [项目体检与下一阶段计划](docs/project_review_and_plan.md)
 - [合成 AI 新闻语料 Demo](examples/synthetic_ai_news/README.md)
 - [中美关系新闻语料 Demo](examples/news_us_china/README.md)
 - [Demo 运行记录](docs/demo_run_records.md)
@@ -296,8 +297,9 @@ AnySearch 搜公网
 v0.1 通用检索 Skill：配置、导入、检索、demo、文档
 v0.2 新闻调研 workflow：多问题检索和 markdown 报告草稿
 v0.3 开源可复现合成语料 demo
-v0.4 AnySearch connector
-v0.5 可选 OpenVikingBot / MCP 集成
+v0.4 引用质量增强：去重、引用统计、证据覆盖检查
+v0.5 可插拔 AnySearch connector
+v0.6 可插拔 MCP / OpenVikingBot adapter
 ```
 
 ## License

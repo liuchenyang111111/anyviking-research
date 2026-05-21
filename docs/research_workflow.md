@@ -142,8 +142,8 @@ viking://resources/synthetic-ai-news
 
 下一步可以在这个 workflow 上继续加：
 
-- JSON 文件输出。
 - 引用去重和分组。
+- 引用统计和证据覆盖检查。
 - LLM 摘要生成。
 - OpenVikingBot 或 MCP 集成。
 - AnySearch 抓取公网资料后导入 OpenViking。
