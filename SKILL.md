@@ -80,6 +80,12 @@ Write a JSON file for downstream automation:
 ov-search-skill research examples\synthetic_ai_news\research_questions.yaml --output reports\synthetic_ai_news_research_draft.md --json-output reports\synthetic_ai_news_research_draft.json
 ```
 
+Tune research quality checks:
+
+```powershell
+ov-search-skill research examples\synthetic_ai_news\research_questions.yaml --output reports\synthetic_ai_news_research_draft.md --dedupe section --min-results-per-section 2
+```
+
 ## Notes For Agents
 
 - Prefer `--scope` whenever the target corpus is known.
@@ -87,4 +93,5 @@ ov-search-skill research examples\synthetic_ai_news\research_questions.yaml --ou
 - Use `--documents-only` when citations should point to original source documents rather than `.abstract.md` or `.overview.md`.
 - Use `research` when the user needs a multi-question retrieval draft with `viking://` citations.
 - Use `--json-output` when another script or Agent needs structured research results.
+- Use the default `--dedupe section` for cleaner reports; use `--dedupe none` only when debugging raw OpenViking output.
 - Do not expose or commit API keys from `config/ov.conf`.

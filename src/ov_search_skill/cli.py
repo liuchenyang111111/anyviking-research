@@ -112,6 +112,23 @@ def build_parser() -> argparse.ArgumentParser:
         help="每个问题先向 OpenViking 拉取多少候选结果；过滤噪声较多时可以调大。",
     )
     research.add_argument(
+        "--dedupe",
+        choices=("section", "none"),
+        default="section",
+        help="去重策略。section 表示同一章节内同一 URI 只保留一次；none 表示保留原始结果。",
+    )
+    research.add_argument(
+        "--no-citation-stats",
+        action="store_true",
+        help="不在报告和 JSON 中生成引用统计。",
+    )
+    research.add_argument(
+        "--min-results-per-section",
+        type=int,
+        default=1,
+        help="每个章节期望的最低结果数，低于该值时生成质量提示。",
+    )
+    research.add_argument(
         "--url",
         default="http://127.0.0.1:1933",
         help="OpenViking 服务地址",
@@ -232,6 +249,9 @@ def main(argv: list[str] | None = None) -> int:
                 base_url=args.url,
                 top_k=args.top_k,
                 fetch_k=args.fetch_k,
+                dedupe=args.dedupe,
+                include_citation_stats=not args.no_citation_stats,
+                min_results_per_section=args.min_results_per_section,
                 documents_only=not args.include_summaries,
                 filter_unhelpful=not args.keep_unhelpful,
                 timeout=args.timeout,

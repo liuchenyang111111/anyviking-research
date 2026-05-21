@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.0
+
+- Added section-level research result deduplication.
+- Added citation statistics to markdown and JSON research output.
+- Added research quality warnings for empty, low-coverage, and highly reused evidence.
+- Added `--dedupe`, `--no-citation-stats`, and `--min-results-per-section` CLI options.
+
 ## 0.3.1
 
 - Streamlined documentation by merging demo run records and removing duplicated stage documents.

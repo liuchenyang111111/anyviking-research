@@ -160,11 +160,12 @@ ov-search-skill search "<query>" --scope <viking-uri> --format text
 ov-search-skill search "<query>" --scope <viking-uri> --documents-only
 ov-search-skill research <questions.yaml> --output reports\research_draft.md
 ov-search-skill research <questions.yaml> --output reports\research_draft.md --json-output reports\research_draft.json
+ov-search-skill research <questions.yaml> --output reports\research_draft.md --dedupe section --min-results-per-section 2
 ```
 
 JSON 输出适合脚本和 AI Agent；文本输出适合人工查看。
 
-`research` 是阶段二新增的轻量调研 workflow。它会对 YAML 里的每个问题分别检索 OpenViking，然后输出带 `viking://` 引用的 markdown 草稿。它默认会过滤 OpenViking 自动摘要和明显无效的占位回答。
+`research` 会对 YAML 里的每个问题分别检索 OpenViking，然后输出带 `viking://` 引用的 markdown 草稿。它默认会过滤 OpenViking 自动摘要和明显无效的占位回答，并在报告末尾生成引用统计和质量提示。
 
 ## 合成 AI 新闻 Demo
 

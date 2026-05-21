@@ -62,6 +62,8 @@ examples/
 
 ## 3. v0.4：引用质量增强
 
+状态：已实现。
+
 ### 目标
 
 让 `ov-search-skill research` 生成的草稿更适合阅读、复查和后续交给 Agent 使用。
@@ -72,7 +74,7 @@ examples/
 - JSON 结构化结果。
 - `viking://` 引用。
 
-下一步要补的是：
+本阶段补上的能力是：
 
 - 结果去重。
 - 引用统计。
@@ -155,11 +157,11 @@ JSON 输出中新增：
 
 ### 3.4 v0.4 交付物
 
-- 更新 `src/ov_search_skill/workflows/research.py`。
-- 新增 citation stats 数据结构。
-- 更新 markdown 渲染。
-- 更新 JSON 输出。
-- 新增 CLI 参数：
+- 已更新 `src/ov_search_skill/workflows/research.py`。
+- 已新增 citation stats 数据结构。
+- 已更新 markdown 渲染。
+- 已更新 JSON 输出。
+- 已新增 CLI 参数：
 
 ```powershell
 --dedupe section
@@ -167,8 +169,8 @@ JSON 输出中新增：
 --no-citation-stats
 ```
 
-- 更新测试。
-- 更新 `docs/research_workflow.md`。
+- 已更新测试。
+- 已更新 `docs/research_workflow.md`。
 
 ## 4. v0.5：可插拔 AnySearch Connector
 
@@ -319,6 +321,7 @@ python -m compileall src tests
 
 - README 显示正常。
 - 合成 demo 可完整运行。
+- research 报告包含“引用统计”和“质量提示”。
 - `reports/` 生成文件不进入 Git。
 - `config/ov.conf` 不进入 Git。
 - GitHub Actions 文件存在。
@@ -328,6 +331,6 @@ python -m compileall src tests
 1. 明天本地测试。
 2. 推到 GitHub，先 Private。
 3. 确认 GitHub 页面没有泄露配置或报告。
-4. 开始 v0.4 引用质量增强。
+4. 确认 v0.4 引用质量增强在真实 demo 中表现正常。
 5. v0.4 稳定后，再设计 v0.5 AnySearch connector。
 6. 最后再评估 v0.6 MCP / OpenVikingBot adapter。

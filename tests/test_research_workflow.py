@@ -6,6 +6,9 @@ from ov_search_skill.retrievers.base import SearchResult
 from ov_search_skill.workflows.research import (
     ResearchQuestion,
     ResearchReport,
+    _build_citation_stats,
+    _build_quality_warnings,
+    _dedupe_results_by_uri,
     load_questions,
     render_markdown,
     report_to_jsonable,
@@ -106,6 +109,133 @@ class ResearchWorkflowTests(unittest.TestCase):
         self.assertEqual(data["title"], "测试调研")
         self.assertEqual(data["question_count"], 1)
         self.assertEqual(data["sections"][0]["results"][0]["uri"], result.uri)
+        self.assertIn("citation_stats", data)
+        self.assertIn("quality_warnings", data)
+
+    def test_dedupe_results_by_uri_keeps_highest_scored_result(self) -> None:
+        low_score = SearchResult(
+            title="doc low",
+            uri="viking://resources/demo/doc.md",
+            snippet="low",
+            score=0.2,
+        )
+        high_score = SearchResult(
+            title="doc high",
+            uri="viking://resources/demo/doc.md",
+            snippet="high",
+            score=0.8,
+        )
+        other = SearchResult(
+            title="other",
+            uri="viking://resources/demo/other.md",
+            snippet="other",
+            score=0.5,
+        )
+
+        results = _dedupe_results_by_uri([low_score, other, high_score])
+
+        self.assertEqual(len(results), 2)
+        self.assertEqual(results[0].title, "doc high")
+        self.assertEqual(results[1].title, "other")
+
+    def test_build_citation_stats_counts_reused_documents(self) -> None:
+        questions = [
+            ResearchQuestion(id="market", heading="市场", question="市场问题"),
+            ResearchQuestion(id="roadmap", heading="路线", question="路线问题"),
+        ]
+        shared = SearchResult(
+            title="shared",
+            uri="viking://resources/demo/shared.md",
+            snippet="shared",
+            score=0.7,
+        )
+        stronger_shared = SearchResult(
+            title="shared",
+            uri="viking://resources/demo/shared.md",
+            snippet="shared again",
+            score=0.9,
+        )
+        unique = SearchResult(
+            title="unique",
+            uri="viking://resources/demo/unique.md",
+            snippet="unique",
+            score=0.5,
+        )
+
+        stats = _build_citation_stats(
+            questions,
+            {
+                "market": [shared, unique],
+                "roadmap": [stronger_shared],
+            },
+        )
+
+        self.assertEqual(stats[0].uri, shared.uri)
+        self.assertEqual(stats[0].count, 2)
+        self.assertEqual(stats[0].section_headings, ["市场", "路线"])
+        self.assertEqual(stats[0].best_score, 0.9)
+
+    def test_build_quality_warnings_detects_low_coverage_and_high_reuse(self) -> None:
+        questions = [
+            ResearchQuestion(id="a", heading="A", question="A?"),
+            ResearchQuestion(id="b", heading="B", question="B?"),
+        ]
+        shared = SearchResult(
+            title="shared",
+            uri="viking://resources/demo/shared.md",
+            snippet="shared",
+            score=0.8,
+        )
+        stats = _build_citation_stats(
+            questions,
+            {
+                "a": [shared],
+                "b": [shared],
+            },
+        )
+
+        warnings = _build_quality_warnings(
+            questions,
+            {
+                "a": [shared],
+                "b": [shared],
+            },
+            stats,
+            min_results_per_section=2,
+        )
+
+        codes = {warning.code for warning in warnings}
+        self.assertIn("low_coverage", codes)
+        self.assertIn("high_reuse", codes)
+
+    def test_render_markdown_includes_citation_stats_and_quality_warnings(self) -> None:
+        question = ResearchQuestion(id="a", heading="A", question="A?")
+        result = SearchResult(
+            title="doc",
+            uri="viking://resources/demo/doc.md",
+            snippet="doc",
+            score=0.8,
+        )
+        stats = _build_citation_stats([question], {"a": [result]})
+        warnings = _build_quality_warnings(
+            [question],
+            {"a": []},
+            stats,
+            min_results_per_section=1,
+        )
+        report = ResearchReport(
+            title="测试调研",
+            scope="viking://resources/demo",
+            questions=[question],
+            results_by_id={"a": [result]},
+            citation_stats=stats,
+            quality_warnings=warnings,
+        )
+
+        markdown = render_markdown(report)
+
+        self.assertIn("## 引用统计", markdown)
+        self.assertIn("## 质量提示", markdown)
 
 
 if __name__ == "__main__":

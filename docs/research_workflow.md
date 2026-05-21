@@ -110,6 +110,30 @@ reports\news_us_china_research_draft.md
 
 把结构化检索结果写入 JSON 文件，适合交给后续脚本、Agent 或可视化工具继续处理。
 
+```powershell
+--dedupe section
+```
+
+同一章节内按 URI 去重，只保留同一文档中分数最高的一条结果。默认开启。
+
+```powershell
+--dedupe none
+```
+
+关闭章节内去重，适合调试 OpenViking 原始返回结果。
+
+```powershell
+--no-citation-stats
+```
+
+关闭报告末尾的引用统计。
+
+```powershell
+--min-results-per-section 2
+```
+
+设置每个章节期望的最低结果数。低于该数量时，报告会在“质量提示”中提醒。
+
 ## 当前验证结果
 
 使用旧项目新闻语料：
@@ -124,6 +148,7 @@ viking://resources/news-us-china-2026-05
 - 每节 Top 5。
 - 共 35 条 `viking://` 引用。
 - 已过滤明显无效的占位回答。
+- 已输出引用统计和质量提示。
 
 使用开源可复现合成语料：
 
@@ -137,13 +162,12 @@ viking://resources/synthetic-ai-news
 - 每节 Top 4。
 - 共 20 条 `viking://` 引用。
 - 已过滤明显无效的占位回答。
+- 已输出引用统计和质量提示。
 
 ## 后续方向
 
 下一步可以在这个 workflow 上继续加：
 
-- 引用去重和分组。
-- 引用统计和证据覆盖检查。
 - LLM 摘要生成。
 - OpenVikingBot 或 MCP 集成。
 - AnySearch 抓取公网资料后导入 OpenViking。

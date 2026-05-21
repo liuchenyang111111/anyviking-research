@@ -32,6 +32,8 @@ viking://resources/synthetic-ai-news
 5 个调研章节
 每节 Top 4
 共 20 条 viking:// 引用
+8 条 citation_stats
+4 条 quality_warnings
 ```
 
 输出文件：
