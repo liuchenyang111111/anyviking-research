@@ -74,10 +74,17 @@ For the synthetic corpus:
 ov-search-skill research examples\synthetic_ai_news\research_questions.yaml --output reports\synthetic_ai_news_research_draft.md --top-k 4
 ```
 
+Write a JSON file for downstream automation:
+
+```powershell
+ov-search-skill research examples\synthetic_ai_news\research_questions.yaml --output reports\synthetic_ai_news_research_draft.md --json-output reports\synthetic_ai_news_research_draft.json
+```
+
 ## Notes For Agents
 
 - Prefer `--scope` whenever the target corpus is known.
 - Use JSON output for downstream automation.
 - Use `--documents-only` when citations should point to original source documents rather than `.abstract.md` or `.overview.md`.
 - Use `research` when the user needs a multi-question retrieval draft with `viking://` citations.
+- Use `--json-output` when another script or Agent needs structured research results.
 - Do not expose or commit API keys from `config/ov.conf`.

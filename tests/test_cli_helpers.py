@@ -1,8 +1,16 @@
+import json
+import tempfile
 import unittest
+from pathlib import Path
 
-from ov_search_skill.cli import _is_generated_summary
+from ov_search_skill.cli import _is_generated_summary, _write_json_report
 from ov_search_skill.retrievers.base import SearchResult
-from ov_search_skill.workflows.research import _candidate_limit, _is_unhelpful_result
+from ov_search_skill.workflows.research import (
+    ResearchQuestion,
+    ResearchReport,
+    _candidate_limit,
+    _is_unhelpful_result,
+)
 
 
 class CliHelperTests(unittest.TestCase):
@@ -62,6 +70,33 @@ class CliHelperTests(unittest.TestCase):
             ),
             12,
         )
+
+    def test_write_json_report_creates_structured_file(self) -> None:
+        question = ResearchQuestion(
+            id="demo",
+            heading="Demo",
+            question="What is indexed?",
+        )
+        result = SearchResult(
+            title="doc",
+            uri="viking://resources/demo/doc.md",
+            snippet="A useful result.",
+            score=0.8,
+        )
+        report = ResearchReport(
+            title="Demo Report",
+            scope="viking://resources/demo",
+            questions=[question],
+            results_by_id={"demo": [result]},
+        )
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            output_path = Path(temp_dir) / "nested" / "report.json"
+            written_path = _write_json_report(report, output_path)
+            data = json.loads(written_path.read_text(encoding="utf-8"))
+
+        self.assertEqual(data["title"], "Demo Report")
+        self.assertEqual(data["sections"][0]["results"][0]["uri"], result.uri)
 
 
 if __name__ == "__main__":

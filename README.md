@@ -159,6 +159,7 @@ ov-search-skill search "<query>" --scope <viking-uri> --top-k 5
 ov-search-skill search "<query>" --scope <viking-uri> --format text
 ov-search-skill search "<query>" --scope <viking-uri> --documents-only
 ov-search-skill research <questions.yaml> --output reports\research_draft.md
+ov-search-skill research <questions.yaml> --output reports\research_draft.md --json-output reports\research_draft.json
 ```
 
 JSON 输出适合脚本和 AI Agent；文本输出适合人工查看。
@@ -242,9 +243,11 @@ python -m unittest discover -s tests
 python -m compileall src tests
 ```
 
+GitHub Actions 会在推送或 Pull Request 时自动运行这些不依赖 OpenViking 服务的测试。
+
 ## 与 AnySearch 的关系
 
-AnySearch Skill 是本项目的形态参考，不是当前 v0.1 的强依赖。
+AnySearch Skill 是本项目的形态参考，不是当前版本的强依赖。
 
 当前定位：
 
@@ -272,23 +275,20 @@ AnySearch 搜公网
 
 不必需。
 
-当前 v0.1 的核心是通用检索 Skill。OpenVikingBot 可以作为后续增强方向，用来做对话式检索和报告生成，但不应该成为基础功能的强依赖。
+当前核心是通用检索 Skill。OpenVikingBot 可以作为后续增强方向，用来做对话式检索和报告生成，但不应该成为基础功能的强依赖。
 
 ## 文档地图
 
 - [项目架构说明](docs/architecture.md)
 - [从零安装与复现指南](docs/install_from_scratch.md)
-- [环境搭建说明](docs/env_setup.md)
 - [FAQ](docs/faq.md)
-- [项目阶段汇报](docs/project_report.md)
 - [项目基础概念说明](docs/project_basics.md)
 - [检索型调研 Workflow](docs/research_workflow.md)
 - [合成 AI 新闻语料 Demo](examples/synthetic_ai_news/README.md)
 - [中美关系新闻语料 Demo](examples/news_us_china/README.md)
-- [合成语料 Demo 运行记录](docs/synthetic_demo_run_record.md)
-- [新闻语料 Demo 运行记录](docs/news_demo_run_record.md)
-- [后续任务规划](docs/next_steps.md)
-- [开源检查清单](docs/open_source_checklist.md)
+- [Demo 运行记录](docs/demo_run_records.md)
+- [Roadmap](ROADMAP.md)
+- [Changelog](CHANGELOG.md)
 
 ## 路线图
 
@@ -302,4 +302,6 @@ v0.5 可选 OpenVikingBot / MCP 集成
 
 ## License
 
-MIT
+本项目使用 MIT License。
+
+注意：本项目依赖的 OpenViking 是独立上游项目，当前 OpenViking 发布包标注为 AGPL-3.0，请同时遵守 OpenViking 自身许可证要求。

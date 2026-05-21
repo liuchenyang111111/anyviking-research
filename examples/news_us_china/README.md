@@ -89,4 +89,4 @@ reports\news_us_china_research_draft.md
 ov-search-skill research examples\news_us_china\research_questions.yaml --output reports\news_us_china_research_draft.md --top-k 5 --fetch-k 60
 ```
 
-本次运行记录见 [../../docs/news_demo_run_record.md](../../docs/news_demo_run_record.md)。
+本次运行记录见 [../../docs/demo_run_records.md](../../docs/demo_run_records.md)。

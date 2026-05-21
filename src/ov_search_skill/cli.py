@@ -14,6 +14,7 @@ import httpx
 from ov_search_skill.retrievers.base import SearchResult
 from ov_search_skill.retrievers.openviking import OpenVikingRetriever
 from ov_search_skill.workflows.research import (
+    ResearchReport,
     report_to_jsonable,
     run_research,
     write_markdown_report,
@@ -131,6 +132,11 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="同时在终端输出 JSON 摘要。",
     )
+    research.add_argument(
+        "--json-output",
+        default=None,
+        help="可选 JSON 输出文件路径，适合后续脚本或 Agent 读取。",
+    )
 
     return parser
 
@@ -231,6 +237,7 @@ def main(argv: list[str] | None = None) -> int:
                 timeout=args.timeout,
             )
             output_path = write_markdown_report(report, args.output)
+            json_output_path = _write_json_report(report, args.json_output) if args.json_output else None
         except (OSError, RuntimeError, ValueError) as exc:
             print(str(exc), file=sys.stderr)
             return 2
@@ -239,6 +246,8 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps(report_to_jsonable(report), ensure_ascii=False, indent=2))
         else:
             print(f"已生成检索型调研草稿：{output_path}")
+            if json_output_path is not None:
+                print(f"已生成 JSON 检索结果：{json_output_path}")
         return 0
 
     parser.error(f"Unknown command: {args.command}")
@@ -303,6 +312,16 @@ def _print_text_results(query: str, scope: str | None, results: list[SearchResul
 def _is_generated_summary(uri: str) -> bool:
     tail = uri.rstrip("/").rsplit("/", 1)[-1].lower()
     return tail in {".abstract.md", ".overview.md"}
+
+
+def _write_json_report(report: ResearchReport, output_path: str | Path) -> Path:
+    path = Path(output_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(report_to_jsonable(report), ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    return path
 
 
 if __name__ == "__main__":

@@ -104,6 +104,12 @@ reports\news_us_china_research_draft.md
 
 在终端额外输出结构化 JSON，方便后续脚本或 Agent 读取。
 
+```powershell
+--json-output reports\research_draft.json
+```
+
+把结构化检索结果写入 JSON 文件，适合交给后续脚本、Agent 或可视化工具继续处理。
+
 ## 当前验证结果
 
 使用旧项目新闻语料：
