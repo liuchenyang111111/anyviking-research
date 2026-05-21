@@ -9,19 +9,20 @@ $ErrorActionPreference = "Stop"
 $ProjectRoot = Resolve-Path (Join-Path $PSScriptRoot "..")
 $Server = Join-Path $ProjectRoot ".venv\Scripts\openviking-server.exe"
 $Config = Resolve-Path (Join-Path $ProjectRoot $ConfigPath)
+$BaseUrl = "http://${HostName}:$Port"
 
 if (-not (Test-Path $Server)) {
     throw "openviking-server not found: $Server. Activate .venv and install openviking first."
 }
 
 try {
-    $health = Invoke-RestMethod "http://$HostName`:$Port/health" -TimeoutSec 3
+    $health = Invoke-RestMethod "$BaseUrl/health" -TimeoutSec 3
     if ($health.healthy) {
-        Write-Output "OpenViking is already running at http://$HostName`:$Port."
+        Write-Output "OpenViking is already running at $BaseUrl."
         exit 0
     }
 } catch {
-    # 服务未启动时继续启动。
+    # Continue when the service is not running.
 }
 
 $env:PYTHONIOENCODING = "utf-8"
@@ -37,7 +38,7 @@ $process = Start-Process `
 Start-Sleep -Seconds 8
 
 try {
-    $health = Invoke-RestMethod "http://$HostName`:$Port/health" -TimeoutSec 10
+    $health = Invoke-RestMethod "$BaseUrl/health" -TimeoutSec 10
     Write-Output "OpenViking started."
     Write-Output "PID: $($process.Id)"
     Write-Output "Health: $($health.status), version $($health.version)"

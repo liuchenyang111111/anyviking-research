@@ -87,13 +87,16 @@ YOUR_VOLCENGINE_API_KEY
 
 替换成自己的火山引擎 API key。
 
-确认 workspace 使用当前项目：
+模板默认使用相对路径：
 
 ```json
 "storage": {
-  "workspace": "D:/Github/OpenViking_Search_Skill/workspace"
+  "workspace": "workspace"
 }
 ```
+
+用本项目的 `scripts\start_openviking.ps1` 启动时，工作目录会固定到项目根目录，所以这个相对路径会落到当前项目的 `workspace\`。
+如果你手动从别的目录启动 `openviking-server`，建议把这里改成你的项目绝对路径。
 
 ## 5. 启动服务
 

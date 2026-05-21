@@ -4,7 +4,7 @@
     "port": 1933
   },
   "storage": {
-    "workspace": "D:/Github/OpenViking_Search_Skill/workspace"
+    "workspace": "workspace"
   },
   "embedding": {
     "dense": {
