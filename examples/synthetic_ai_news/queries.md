@@ -1,27 +1,27 @@
-# 合成 AI 新闻语料查询问题
+﻿# Synthetic AI News Search Questions
 
-这些问题用于验证合成语料的检索效果。
+Use these queries after importing the synthetic corpus into `viking://resources/synthetic-ai-news`.
 
 ```powershell
-ov-search-skill search "为什么开源项目需要合成 demo 语料" --scope viking://resources/synthetic-ai-news --top-k 5 --documents-only --format text
+ar search "Why does this project use a synthetic demo corpus?" --scope viking://resources/synthetic-ai-news --top-k 5 --documents-only --format text
 ```
 
 ```powershell
-ov-search-skill search "AI 搜索产品为什么不能只看答案流畅度" --scope viking://resources/synthetic-ai-news --top-k 5 --documents-only --format text
+ar search "Why is answer fluency not enough for AI search products?" --scope viking://resources/synthetic-ai-news --top-k 5 --documents-only --format text
 ```
 
 ```powershell
-ov-search-skill search "端侧大模型和本地语料检索有什么关系" --scope viking://resources/synthetic-ai-news --top-k 5 --documents-only --format text
+ar search "How do edge LLMs and local corpus retrieval complement each other?" --scope viking://resources/synthetic-ai-news --top-k 5 --documents-only --format text
 ```
 
 ```powershell
-ov-search-skill search "AnySearch 和 OpenViking 的分工是什么" --scope viking://resources/synthetic-ai-news --top-k 5 --documents-only --format text
+ar search "What is the division of labor between AnySearch and OpenViking?" --scope viking://resources/synthetic-ai-news --top-k 5 --documents-only --format text
 ```
 
 ```powershell
-ov-search-skill search "企业知识库检索为什么需要权限和元数据" --scope viking://resources/synthetic-ai-news --top-k 5 --documents-only --format text
+ar search "Why do enterprise knowledge bases need permissions and metadata?" --scope viking://resources/synthetic-ai-news --top-k 5 --documents-only --format text
 ```
 
 ```powershell
-ov-search-skill search "产品路线为什么建议先做可靠检索再做自动报告" --scope viking://resources/synthetic-ai-news --top-k 5 --documents-only --format text
+ar search "Why should the roadmap stabilize retrieval before automatic report writing?" --scope viking://resources/synthetic-ai-news --top-k 5 --documents-only --format text
 ```

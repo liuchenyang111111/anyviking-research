@@ -5,7 +5,7 @@ from urllib.parse import unquote
 
 import httpx
 
-from ov_search_skill.retrievers.base import SearchResult
+from anyviking_research.retrievers.base import SearchResult
 
 
 class OpenVikingRetriever:

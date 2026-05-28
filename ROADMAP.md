@@ -1,59 +1,70 @@
-# Roadmap
+﻿# AnyViking Research Roadmap
 
-## 已完成
+AnyViking Research connects AnySearch upstream discovery with OpenViking downstream indexing and retrieval.
 
-### v0.1 通用检索 Skill
+## Done
 
-- Python 3.12 + OpenViking 0.3.17 环境验证。
-- 项目专用 OpenViking 配置模板。
-- `ov-search-skill health/status/import-local/tree/search`。
-- smoke corpus 最小测试语料。
-- JSON 和文本两种输出。
-- `--documents-only` 过滤 OpenViking 自动摘要。
+### v0.1 Local OpenViking wrapper
 
-### v0.2 检索型调研 Workflow
+- Project-specific OpenViking config examples.
+- `ar health`, `ar status`, `ar import-local`, `ar tree`, and `ar search`.
+- JSON and text search output.
+- `--documents-only` filtering for generated `.abstract.md` / `.overview.md` files.
 
-- `ov-search-skill research`。
-- YAML 多问题配置。
-- markdown 检索草稿输出。
-- 自动过滤明显无效占位回答。
-- 新闻语料 demo 的 research 验证。
+### v0.2 Retrieval research workflow
 
-### v0.3 开源可复现 Demo
+- YAML question file input.
+- Per-section OpenViking retrieval.
+- Markdown research draft output.
+- Optional JSON output.
+- Citation statistics and quality warnings.
 
-- `examples/synthetic_ai_news` 合成语料。
-- 可复现的 `run_demo.ps1` 和 `run_research.ps1`。
-- 公开演示不依赖旧项目路径，不复制新闻全文。
+### v0.3 Demo corpus
 
-### v0.3.1 开源发布前整理
+- Small smoke corpus.
+- Synthetic AI news corpus that is safe to keep in the repository.
+- Demo scripts for search and research generation.
 
-- 合并 demo 运行记录。
-- 删除重复阶段性文档。
-- 增加 `ROADMAP.md` 和 `CHANGELOG.md`。
-- 增加 `--json-output`，把 research 结构化结果写入 JSON 文件。
-- 增加 GitHub Actions 单元测试。
+### v0.4 AnySearch upstream connector
 
-### v0.4 输出质量增强
+- `AnySearchConnector` for `POST https://api.anysearch.com/v1/search`.
+- Support for AnySearch `data.results` response shape.
+- Optional `ANYSEARCH_API_KEY` environment variable.
+- `ar search-web` for web-only search.
+- `ar fetch-web` for raw JSON, markdown corpus, and manifest output.
+- `ar sync` for AnySearch -> markdown -> OpenViking import.
 
-- 已增加结果去重，避免同一章节内重复引用同一文档。
-- 已增加引用统计，输出每份文档被哪些问题命中。
-- 已增加证据覆盖检查，提示哪些章节结果太少或重复太高。
+### v0.5 End-to-end proof
 
-## 建议下一步
+Verified locally on 2026-05-28:
 
-### v0.5 外部资料接入
+- OpenViking 0.3.17 health check passed.
+- AnySearch returned live results for `OpenViking GitHub`.
+- `ar sync` created markdown files and imported them into `viking://resources/openviking-github-sync`.
+- `ar search` retrieved the imported web corpus from OpenViking.
+- `ar research` generated `reports\openviking_github_sync_research.md` and JSON output.
+- Unit tests passed.
 
-- 评估 AnySearch 作为公网资料发现入口。
-- 将公网资料保存为 markdown 后导入 OpenViking。
+## Next
 
-### v0.6 Agent 集成
+### v0.6 Better research ergonomics
 
-- 评估 MCP 或 OpenVikingBot。
-- 优先保持当前 CLI 和 workflow 稳定，再接入更复杂的 Agent 能力。
+- Add topic presets for common research tasks.
+- Add clearer progress output during long OpenViking imports.
+- Add a command to create a starter YAML question file for a synced topic.
 
-## 暂不做
+### v0.7 Optional LLM synthesis
 
-- Web UI。
-- 大型仓库导入。
-- 复杂 Agent planner。
-- 自动生成完整最终报告。
+- Add an optional summarization step that turns retrieved evidence into a stronger narrative draft.
+- Keep citations grounded in `viking://` URIs.
+- Make the LLM provider optional so search/indexing still works without it.
+
+### v0.8 MCP / OpenVikingBot adapters
+
+- Wrap the stable CLI workflow as an MCP tool if agents need direct tool calls.
+- Consider OpenVikingBot integration after the CLI workflow remains stable.
+
+### v0.9 Web UI, only if needed
+
+- A small UI could show search, saved corpus, indexed resources, and generated reports.
+- It is not required for the current CLI-first project.

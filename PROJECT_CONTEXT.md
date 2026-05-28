@@ -25,7 +25,7 @@ D:\Github\OpenViking_Run
 新项目路径：
 
 ```text
-D:\Github\OpenViking_Search_Skill
+D:\Github\anyviking-research
 ```
 
 这个项目不再只做一个固定新闻主题，而是先整理成一个可复用的 OpenViking 本地语料检索 Skill。第二阶段重点是把环境、配置、最小语料导入、检索命令、项目 CLI 和轻量调研 workflow 跑清楚。第三阶段补充一套项目自写的合成 AI 新闻语料，让开源用户 clone 后也能完整复现 demo。
@@ -39,9 +39,9 @@ D:\Github\OpenViking_Search_Skill
 - 本项目专用配置说明。
 - 小型 markdown 测试语料。
 - `ov find` 检索验证。
-- `ov_search_skill` 最小 Python/CLI 包装。
+- `anyviking_research` 最小 Python/CLI 包装。
 - 旧项目新闻语料 demo。
-- `ov-search-skill research` 检索型调研草稿。
+- `ar research` 检索型调研草稿。
 - 合成 AI 新闻语料 demo：`examples/synthetic_ai_news`。
 
 暂时不做：

@@ -19,13 +19,13 @@ main.py
 所以 Python 项目通常会拆成“包”。本项目的包是：
 
 ```text
-src/ov_search_skill/
+src/anyviking_research/
 ```
 
 可以把它理解成一个小工具箱。工具箱里目前有：
 
 ```text
-src/ov_search_skill/
+src/anyviking_research/
   __init__.py
   cli.py
   retrievers/
@@ -43,7 +43,7 @@ src/ov_search_skill/
 有了包之后，别的代码就可以这样复用：
 
 ```python
-from ov_search_skill import OpenVikingRetriever
+from anyviking_research import OpenVikingRetriever
 
 retriever = OpenVikingRetriever()
 results = retriever.search("第二阶段重点做什么")
@@ -60,8 +60,8 @@ CLI 是 command line interface 的缩写，意思是“命令行接口”。
 比如本项目支持：
 
 ```powershell
-python -m ov_search_skill.cli health
-python -m ov_search_skill.cli search "第二阶段重点做什么" --scope viking://resources/smoke-corpus --top-k 3
+python -m anyviking_research.cli health
+python -m anyviking_research.cli search "第二阶段重点做什么" --scope viking://resources/smoke-corpus --top-k 3
 ```
 
 这比每次都写 Python 代码更方便。
@@ -87,25 +87,25 @@ CLI 的价值是：
 
 ```toml
 [project.scripts]
-ov-search-skill = "ov_search_skill.cli:main"
+ar = "anyviking_research.cli:main"
 ```
 
 意思是：以后如果把项目安装成可编辑包，就可以直接运行：
 
 ```powershell
-ov-search-skill search "第二阶段重点做什么"
+ar search "第二阶段重点做什么"
 ```
 
 当前阶段先用：
 
 ```powershell
-python -m ov_search_skill.cli search "第二阶段重点做什么"
+python -m anyviking_research.cli search "第二阶段重点做什么"
 ```
 
 项目完成可编辑安装后，也可以直接用：
 
 ```powershell
-ov-search-skill search "第二阶段重点做什么"
+ar search "第二阶段重点做什么"
 ```
 
 这就是为什么前面要“安装成可编辑包”：不是为了发布到网上，而是为了开发时能像使用正式工具一样使用当前项目。
@@ -147,7 +147,7 @@ C:\Users\ASUS\.openviking\ov.conf
 本项目也可以有自己的配置：
 
 ```text
-D:\Github\OpenViking_Search_Skill\config\ov.conf
+D:\Github\anyviking-research\config\ov.conf
 ```
 
 启动时指定它：

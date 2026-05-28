@@ -1,18 +1,32 @@
-# 检索流程
+﻿# Search Workflow
 
-这个项目的基础检索流程分为四步：
+The basic local retrieval flow has four steps:
 
-1. 把本地笔记或文档整理成 markdown。
-2. 使用 `ov add-resource` 把 markdown 文件夹导入 OpenViking。
-3. 等待 OpenViking 完成索引。
-4. 使用 `ov find` 或项目 CLI 提出问题。
+1. Prepare local notes or documents as markdown files.
+2. Import the markdown folder into OpenViking with `ar import-local`.
+3. Wait for OpenViking to finish indexing. `ar import-local` does this by default.
+4. Ask questions with `ar search` or `ar research`.
 
-一次成功的最小测试，应该能返回以 `viking://resources/smoke-corpus` 开头的引用结果。
+A successful smoke test should return results under this scope:
 
-如果要做多问题调研，可以把问题写进 YAML 配置，再运行：
-
-```powershell
-ov-search-skill research <questions.yaml> --output reports\research_draft.md
+```text
+viking://resources/smoke-corpus
 ```
 
-这样会生成一份检索型草稿，而不是直接生成最终报告。
+Run the smoke test:
+
+```powershell
+.\scripts\smoke_test.ps1
+```
+
+Run a manual search:
+
+```powershell
+ar search "What is the core purpose of the second phase?" --scope viking://resources/smoke-corpus --top-k 3 --format text --documents-only
+```
+
+For multi-question research, write the questions in YAML and run:
+
+```powershell
+ar research <questions.yaml> --output reports\research_draft.md
+```

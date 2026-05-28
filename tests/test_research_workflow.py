@@ -1,9 +1,9 @@
-import tempfile
+﻿import tempfile
 import unittest
 from pathlib import Path
 
-from ov_search_skill.retrievers.base import SearchResult
-from ov_search_skill.workflows.research import (
+from anyviking_research.retrievers.base import SearchResult
+from anyviking_research.workflows.research import (
     ResearchQuestion,
     ResearchReport,
     _build_citation_stats,
@@ -22,12 +22,12 @@ class ResearchWorkflowTests(unittest.TestCase):
             config_path.write_text(
                 "\n".join(
                     [
-                        'topic_title: "测试调研"',
+                        'topic_title: "Demo Research"',
                         'ov_root_uri: "viking://resources/demo"',
                         "sections:",
                         "  - id: background",
-                        '    heading: "背景"',
-                        '    question: "请检索背景信息"',
+                        '    heading: "Background"',
+                        '    question: "Find background information"',
                     ]
                 ),
                 encoding="utf-8",
@@ -35,12 +35,12 @@ class ResearchWorkflowTests(unittest.TestCase):
 
             title, scope, questions = load_questions(config_path)
 
-        self.assertEqual(title, "测试调研")
+        self.assertEqual(title, "Demo Research")
         self.assertEqual(scope, "viking://resources/demo")
         self.assertEqual(len(questions), 1)
         self.assertEqual(questions[0].id, "background")
-        self.assertEqual(questions[0].heading, "背景")
-        self.assertEqual(questions[0].question, "请检索背景信息")
+        self.assertEqual(questions[0].heading, "Background")
+        self.assertEqual(questions[0].question, "Find background information")
 
     def test_load_questions_rejects_missing_scope(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -50,7 +50,7 @@ class ResearchWorkflowTests(unittest.TestCase):
                     [
                         "sections:",
                         "  - id: background",
-                        '    question: "请检索背景信息"',
+                        '    question: "Find background information"',
                     ]
                 ),
                 encoding="utf-8",
@@ -62,17 +62,17 @@ class ResearchWorkflowTests(unittest.TestCase):
     def test_render_markdown_includes_question_and_viking_uri(self) -> None:
         question = ResearchQuestion(
             id="background",
-            heading="背景",
-            question="请检索背景信息",
+            heading="Background",
+            question="Find background information",
         )
         result = SearchResult(
             title="demo",
             uri="viking://resources/demo/doc.md",
-            snippet="这是一条测试摘要。",
+            snippet="This is a useful test snippet.",
             score=0.9,
         )
         report = ResearchReport(
-            title="测试调研",
+            title="Demo Research",
             scope="viking://resources/demo",
             questions=[question],
             results_by_id={"background": [result]},
@@ -80,25 +80,25 @@ class ResearchWorkflowTests(unittest.TestCase):
 
         markdown = render_markdown(report)
 
-        self.assertIn("# 测试调研", markdown)
-        self.assertIn("### 1. 背景", markdown)
-        self.assertIn("请检索背景信息", markdown)
+        self.assertIn("# Demo Research", markdown)
+        self.assertIn("### 1. Background", markdown)
+        self.assertIn("Find background information", markdown)
         self.assertIn("viking://resources/demo/doc.md", markdown)
 
     def test_report_to_jsonable_keeps_structured_results(self) -> None:
         question = ResearchQuestion(
             id="background",
-            heading="背景",
-            question="请检索背景信息",
+            heading="Background",
+            question="Find background information",
         )
         result = SearchResult(
             title="demo",
             uri="viking://resources/demo/doc.md",
-            snippet="这是一条测试摘要。",
+            snippet="This is a useful test snippet.",
             score=0.9,
         )
         report = ResearchReport(
-            title="测试调研",
+            title="Demo Research",
             scope="viking://resources/demo",
             questions=[question],
             results_by_id={"background": [result]},
@@ -106,7 +106,7 @@ class ResearchWorkflowTests(unittest.TestCase):
 
         data = report_to_jsonable(report)
 
-        self.assertEqual(data["title"], "测试调研")
+        self.assertEqual(data["title"], "Demo Research")
         self.assertEqual(data["question_count"], 1)
         self.assertEqual(data["sections"][0]["results"][0]["uri"], result.uri)
         self.assertIn("citation_stats", data)
@@ -140,8 +140,8 @@ class ResearchWorkflowTests(unittest.TestCase):
 
     def test_build_citation_stats_counts_reused_documents(self) -> None:
         questions = [
-            ResearchQuestion(id="market", heading="市场", question="市场问题"),
-            ResearchQuestion(id="roadmap", heading="路线", question="路线问题"),
+            ResearchQuestion(id="market", heading="Market", question="Market question"),
+            ResearchQuestion(id="roadmap", heading="Roadmap", question="Roadmap question"),
         ]
         shared = SearchResult(
             title="shared",
@@ -172,7 +172,7 @@ class ResearchWorkflowTests(unittest.TestCase):
 
         self.assertEqual(stats[0].uri, shared.uri)
         self.assertEqual(stats[0].count, 2)
-        self.assertEqual(stats[0].section_headings, ["市场", "路线"])
+        self.assertEqual(stats[0].section_headings, ["Market", "Roadmap"])
         self.assertEqual(stats[0].best_score, 0.9)
 
     def test_build_quality_warnings_detects_low_coverage_and_high_reuse(self) -> None:
@@ -224,7 +224,7 @@ class ResearchWorkflowTests(unittest.TestCase):
             min_results_per_section=1,
         )
         report = ResearchReport(
-            title="测试调研",
+            title="Demo Research",
             scope="viking://resources/demo",
             questions=[question],
             results_by_id={"a": [result]},
@@ -234,8 +234,8 @@ class ResearchWorkflowTests(unittest.TestCase):
 
         markdown = render_markdown(report)
 
-        self.assertIn("## 引用统计", markdown)
-        self.assertIn("## 质量提示", markdown)
+        self.assertIn("## Citation Stats", markdown)
+        self.assertIn("## Quality Notes", markdown)
 
 
 if __name__ == "__main__":

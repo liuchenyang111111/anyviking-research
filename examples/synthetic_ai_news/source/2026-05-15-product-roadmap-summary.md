@@ -1,6 +1,6 @@
 # 产品路线建议：先做可靠检索，再做自动报告
 
-> 本文为 OpenViking Search Skill 项目 demo 使用的合成资料，不代表真实新闻报道。
+> 本文为 AnyViking Research 项目 demo 使用的合成资料，不代表真实新闻报道。
 
 ## 摘要
 

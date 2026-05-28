@@ -61,7 +61,7 @@ sections:
 也可以直接调用 CLI：
 
 ```powershell
-ov-search-skill research examples\news_us_china\research_questions.yaml --output reports\news_us_china_research_draft.md --top-k 5
+ar research examples\news_us_china\research_questions.yaml --output reports\news_us_china_research_draft.md --top-k 5
 ```
 
 输出文件：

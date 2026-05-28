@@ -1,6 +1,6 @@
 # 开源检索工具生态：公网搜索、本地语料与 Skill 包装
 
-> 本文为 OpenViking Search Skill 项目 demo 使用的合成资料，不代表真实新闻报道。
+> 本文为 AnyViking Research 项目 demo 使用的合成资料，不代表真实新闻报道。
 
 ## 摘要
 
@@ -16,7 +16,7 @@ Skill 包装层负责让 AI Agent 知道如何调用工具。一个好的 Skill 
 
 ## AnySearch 与 OpenViking 的分工
 
-AnySearch 这类工具更像公网搜索入口，适合“找资料”。OpenViking 更像本地语料后端，适合“检索已保存资料”。OpenViking Search Skill 可以把后者包装成稳定命令，未来再接入 AnySearch 作为上游资料来源。
+AnySearch 这类工具更像公网搜索入口，适合“找资料”。OpenViking 更像本地语料后端，适合“检索已保存资料”。AnyViking Research 可以把后者包装成稳定命令，未来再接入 AnySearch 作为上游资料来源。
 
 ## 关键词
 

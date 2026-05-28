@@ -7,8 +7,8 @@ from typing import Any, Literal
 
 import yaml
 
-from ov_search_skill.retrievers.base import SearchResult
-from ov_search_skill.retrievers.openviking import OpenVikingRetriever
+from anyviking_research.retrievers.base import SearchResult
+from anyviking_research.retrievers.openviking import OpenVikingRetriever
 
 
 @dataclass(frozen=True)
@@ -63,7 +63,7 @@ def load_questions(config_path: str | Path) -> tuple[str, str, list[ResearchQues
     if not isinstance(data, dict):
         raise ValueError("research config must be a YAML mapping")
 
-    title = str(data.get("topic_title") or data.get("title") or "OpenViking 检索调研草稿")
+    title = str(data.get("topic_title") or data.get("title") or "OpenViking retrieval research draft")
     scope = str(data.get("ov_root_uri") or data.get("scope") or "").strip()
     if not scope:
         raise ValueError("research config must define ov_root_uri or scope")
@@ -82,7 +82,7 @@ def load_questions(config_path: str | Path) -> tuple[str, str, list[ResearchQues
             raise ValueError(f"section #{index} must define question")
 
         section_id = str(item.get("id") or f"section-{index}")
-        heading = str(item.get("heading") or item.get("title") or f"问题 {index}")
+        heading = str(item.get("heading") or item.get("title") or f"Question {index}")
         questions.append(
             ResearchQuestion(id=section_id, heading=heading, question=question)
         )
@@ -161,15 +161,15 @@ def render_markdown(report: ResearchReport) -> str:
     lines: list[str] = [
         f"# {report.title}",
         "",
-        "> 这是一份检索型调研草稿：它只整理 OpenViking 返回的相关资料，不直接生成最终分析结论。",
+        "> This is a retrieval-based research draft. It organizes evidence returned by OpenViking; it is not a final analytical conclusion.",
         "",
-        "## 元信息",
+        "## Metadata",
         "",
-        f"- 生成时间：{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
-        f"- 检索范围：`{report.scope}`",
-        f"- 问题数量：{len(report.questions)}",
+        f"- Generated at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+        f"- Search scope: `{report.scope}`",
+        f"- Question count: {len(report.questions)}",
         "",
-        "## 检索结果",
+        "## Retrieval Results",
         "",
     ]
 
@@ -179,17 +179,17 @@ def render_markdown(report: ResearchReport) -> str:
             [
                 f"### {index}. {question.heading}",
                 "",
-                "**问题**",
+                "**Question**",
                 "",
                 question.question,
                 "",
-                f"**Top {len(results)} 检索结果**",
+                f"**Top {len(results)} results**",
                 "",
             ]
         )
 
         if not results:
-            lines.extend(["未检索到结果。", ""])
+            lines.extend(["No retrieval results found.", ""])
             continue
 
         for result_index, result in enumerate(results, start=1):
@@ -197,14 +197,14 @@ def render_markdown(report: ResearchReport) -> str:
             lines.extend(
                 [
                     f"{result_index}. **{result.title}**",
-                    f"   - URI：`{result.uri}`",
-                    f"   - Score：{score}",
+                    f"   - URI: `{result.uri}`",
+                    f"   - Score: {score}",
                 ]
             )
             if result.snippet:
                 lines.extend(
                     [
-                        "   - 摘要：",
+                        "   - Snippet:",
                         _indent_multiline(result.snippet, "     "),
                     ]
                 )
@@ -213,15 +213,15 @@ def render_markdown(report: ResearchReport) -> str:
     if report.citation_stats:
         lines.extend(
             [
-                "## 引用统计",
+                "## Citation Stats",
                 "",
-                "| 文档 | 命中次数 | 出现章节 | 最高分 |",
+                "| Document | Hit count | Sections | Best score |",
                 "| --- | ---: | --- | ---: |",
             ]
         )
         for stat in report.citation_stats:
             best_score = f"{stat.best_score:.4f}" if stat.best_score is not None else "N/A"
-            sections = "、".join(stat.section_headings)
+            sections = ", ".join(stat.section_headings)
             lines.append(
                 "| "
                 + " | ".join(
@@ -237,18 +237,18 @@ def render_markdown(report: ResearchReport) -> str:
         lines.append("")
 
     if report.quality_warnings:
-        lines.extend(["## 质量提示", ""])
+        lines.extend(["## Quality Notes", ""])
         for warning in report.quality_warnings:
-            lines.append(f"- `{warning.code}`：{warning.message}")
+            lines.append(f"- `{warning.code}`: {warning.message}")
         lines.append("")
 
     lines.extend(
         [
-            "## 后续可做",
+            "## Suggested Next Steps",
             "",
-            "- 人工阅读上述 URI 对应原文，筛选真正可引用材料。",
-            "- 在此基础上接入 LLM 或 OpenVikingBot，生成完整调研报告。",
-            "- 对每节结果补充引用段落和最终结论。",
+            "- Read the cited `viking://` documents and decide which evidence is worth quoting.",
+            "- Add interpretation, comparison, and final conclusions manually or with an optional LLM step.",
+            "- Keep the final report grounded in the cited OpenViking resources.",
             "",
         ]
     )
@@ -369,7 +369,10 @@ def _build_quality_warnings(
             warnings.append(
                 QualityWarning(
                     code="empty_section",
-                    message=f"“{question.heading}”章节没有检索结果，建议调整问题或扩大检索范围。",
+                    message=(
+                        f"Section '{question.heading}' has no retrieval results. "
+                        "Try changing the question or widening the search scope."
+                    ),
                     section_id=question.id,
                     section_heading=question.heading,
                 )
@@ -379,8 +382,8 @@ def _build_quality_warnings(
                 QualityWarning(
                     code="low_coverage",
                     message=(
-                        f"“{question.heading}”章节只有 {result_count} 条结果，"
-                        f"少于目标值 {min_results_per_section}。"
+                        f"Section '{question.heading}' has only {result_count} result(s), "
+                        f"below the target of {min_results_per_section}."
                     ),
                     section_id=question.id,
                     section_heading=question.heading,
@@ -399,8 +402,8 @@ def _build_quality_warnings(
                 QualityWarning(
                     code="high_reuse",
                     message=(
-                        f"“{stat.title}”出现在 {len(stat.section_ids)} 个章节中，"
-                        "建议人工确认是否证据过度集中。"
+                        f"Document '{stat.title}' appears in {len(stat.section_ids)} sections. "
+                        "Check whether the evidence is too concentrated."
                     ),
                 )
             )
@@ -435,16 +438,21 @@ def _is_unhelpful_result(result: SearchResult) -> bool:
     if not text:
         return True
 
-    normalized = text.replace(" ", "")
+    normalized = text.lower().replace(" ", "")
     unhelpful_markers = (
+        "sorry",
+        "no relevant result",
+        "no relevant results",
+        "cannot answer",
+        "unable to answer",
+        "unable to provide",
+        "not found",
         "抱歉",
         "未找到相关",
         "没有找到相关",
-        "无法给到相关内容",
         "无法回答",
-        "无法为你提供",
         "无法提供",
         "暂未提供有效参考信息",
         "尚未录入具体",
     )
-    return any(marker in normalized for marker in unhelpful_markers)
+    return any(marker.lower().replace(" ", "") in normalized for marker in unhelpful_markers)

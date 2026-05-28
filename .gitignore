@@ -4,11 +4,15 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+build/
+dist/
+*.egg-info/
 .env
 .env.*
 !.env.example
 reports/*
 !reports/.gitkeep
+data/
 workspace/
 config/ov.conf
 config/ovcli.conf

@@ -24,7 +24,7 @@ py -3.12 --version
 ## 2. 创建虚拟环境
 
 ```powershell
-cd D:\Github\OpenViking_Search_Skill
+cd D:\Github\anyviking-research
 py -3.12 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python --version
@@ -55,7 +55,7 @@ python -m pip install -e . --no-deps --no-build-isolation
 ```powershell
 python -m pip show openviking
 openviking-server --version
-ov-search-skill --help
+ar --help
 ```
 
 目标：
@@ -107,8 +107,8 @@ YOUR_VOLCENGINE_API_KEY
 检查：
 
 ```powershell
-ov-search-skill health
-ov-search-skill status
+ar health
+ar status
 ```
 
 如果健康检查失败，先看 [FAQ](faq.md)。
@@ -125,7 +125,7 @@ ov-search-skill status
 OpenViking health ok
 导入 examples\smoke_corpus 成功
 ov find 返回 viking://resources/smoke-corpus 结果
-ov-search-skill search 返回 JSON 结果
+ar search 返回 JSON 结果
 ```
 
 ## 7. 跑合成语料 demo

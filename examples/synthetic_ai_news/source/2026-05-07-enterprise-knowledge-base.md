@@ -1,6 +1,6 @@
 # 企业知识库检索：权限、元数据和更新频率决定可用性
 
-> 本文为 OpenViking Search Skill 项目 demo 使用的合成资料，不代表真实新闻报道。
+> 本文为 AnyViking Research 项目 demo 使用的合成资料，不代表真实新闻报道。
 
 ## 摘要
 

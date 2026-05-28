@@ -30,15 +30,15 @@ viking://resources/news-us-china-2026-05
 ## 导入命令
 
 ```powershell
-ov-search-skill import-local D:\Github\OpenViking_Run\workspace\news_raw\us-china-relations\2026-05-16 --to viking://resources/news-us-china-2026-05
+ar import-local D:\Github\OpenViking_Run\workspace\news_raw\us-china-relations\2026-05-16 --to viking://resources/news-us-china-2026-05
 ```
 
 ## 检索命令
 
 ```powershell
 ov find "特朗普访华实际达成了哪些成果" --uri viking://resources/news-us-china-2026-05
-ov-search-skill search "特朗普访华实际达成了哪些成果" --scope viking://resources/news-us-china-2026-05 --top-k 5 --format text
-ov-search-skill search "特朗普访华实际达成了哪些成果" --scope viking://resources/news-us-china-2026-05 --top-k 5 --documents-only --format text
+ar search "特朗普访华实际达成了哪些成果" --scope viking://resources/news-us-china-2026-05 --top-k 5 --format text
+ar search "特朗普访华实际达成了哪些成果" --scope viking://resources/news-us-china-2026-05 --top-k 5 --documents-only --format text
 ```
 
 更多问题见 [queries.md](queries.md)。
@@ -68,7 +68,7 @@ examples\news_us_china\research_questions.yaml
 直接调用 CLI：
 
 ```powershell
-ov-search-skill research examples\news_us_china\research_questions.yaml --output reports\news_us_china_research_draft.md --top-k 5
+ar research examples\news_us_china\research_questions.yaml --output reports\news_us_china_research_draft.md --top-k 5
 ```
 
 输出：
@@ -86,7 +86,7 @@ reports\news_us_china_research_draft.md
 如果过滤后结果太少，可以调大候选池：
 
 ```powershell
-ov-search-skill research examples\news_us_china\research_questions.yaml --output reports\news_us_china_research_draft.md --top-k 5 --fetch-k 60
+ar research examples\news_us_china\research_questions.yaml --output reports\news_us_china_research_draft.md --top-k 5 --fetch-k 60
 ```
 
 本次运行记录见 [../../docs/demo_run_records.md](../../docs/demo_run_records.md)。

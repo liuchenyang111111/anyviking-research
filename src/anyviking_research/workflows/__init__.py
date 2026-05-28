@@ -1,4 +1,4 @@
-from ov_search_skill.workflows.research import (
+from anyviking_research.workflows.research import (
     CitationStat,
     QualityWarning,
     ResearchQuestion,

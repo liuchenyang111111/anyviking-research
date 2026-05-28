@@ -81,8 +81,8 @@ viking://resources/news-us-china-2026-05
 
 ```powershell
 .\scripts\import_news_demo.ps1
-ov-search-skill search "特朗普访华实际达成了哪些成果" --scope viking://resources/news-us-china-2026-05 --top-k 5 --documents-only --format text
-ov-search-skill research examples\news_us_china\research_questions.yaml --output reports\news_us_china_research_draft.md --top-k 5
+ar search "特朗普访华实际达成了哪些成果" --scope viking://resources/news-us-china-2026-05 --top-k 5 --documents-only --format text
+ar research examples\news_us_china\research_questions.yaml --output reports\news_us_china_research_draft.md --top-k 5
 ```
 
 验证结果：

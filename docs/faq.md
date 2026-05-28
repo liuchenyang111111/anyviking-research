@@ -55,7 +55,7 @@ AnySearch 搜公网
 
 ```text
 OpenViking Server
--> ov-search-skill
+-> ar
 -> JSON 检索结果
 ```
 
@@ -139,10 +139,10 @@ import-local -> search -> research
 例如：
 
 ```powershell
-ov-search-skill search "特朗普访华成果" --scope viking://resources/news-us-china-2026-05 --documents-only
+ar search "特朗普访华成果" --scope viking://resources/news-us-china-2026-05 --documents-only
 ```
 
-## 9. ov-search-skill 找不到怎么办？
+## 9. ar 找不到怎么办？
 
 先确认项目已经可编辑安装：
 
@@ -154,7 +154,7 @@ python -m pip install -e . --no-deps --no-build-isolation
 再运行：
 
 ```powershell
-ov-search-skill --help
+ar --help
 ```
 
 ## 10. health 失败怎么办？
@@ -168,7 +168,7 @@ ov-search-skill --help
 再检查：
 
 ```powershell
-ov-search-skill health
+ar health
 ```
 
 如果仍失败，检查：

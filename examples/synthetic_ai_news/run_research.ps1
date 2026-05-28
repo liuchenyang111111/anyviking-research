@@ -14,10 +14,10 @@ $OutputEncoding = [System.Text.Encoding]::UTF8
 $ProjectRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..")
 Set-Location $ProjectRoot
 
-$Cli = Join-Path $ProjectRoot ".venv\Scripts\ov-search-skill.exe"
+$Cli = Join-Path $ProjectRoot ".venv\Scripts\ar.exe"
 
 if (-not (Test-Path $Cli)) {
-    throw "ov-search-skill.exe not found: $Cli"
+    throw "ar.exe not found: $Cli"
 }
 
 Write-Output "1. Check OpenViking health"

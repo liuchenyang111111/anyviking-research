@@ -1,6 +1,6 @@
 import unittest
 
-from ov_search_skill.retrievers.openviking import OpenVikingRetriever
+from anyviking_research.retrievers.openviking import OpenVikingRetriever
 
 
 class OpenVikingRetrieverTests(unittest.TestCase):

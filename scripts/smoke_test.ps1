@@ -1,6 +1,6 @@
-param(
+﻿param(
     [string]$Scope = "viking://resources/smoke-corpus",
-    [string]$Question = "second phase core local retrieval"
+    [string]$Question = "What is the core purpose of the second phase?"
 )
 
 $ErrorActionPreference = "Stop"
@@ -11,16 +11,11 @@ $OutputEncoding = [System.Text.Encoding]::UTF8
 
 $ProjectRoot = Resolve-Path (Join-Path $PSScriptRoot "..")
 Set-Location $ProjectRoot
-$ScriptsDir = Join-Path $ProjectRoot ".venv\Scripts"
-$Ov = Join-Path $ScriptsDir "ov.exe"
-$Cli = Join-Path $ScriptsDir "ov-search-skill.exe"
 
-if (-not (Test-Path $Ov)) {
-    throw "ov.exe not found: $Ov"
-}
+$Cli = Join-Path $ProjectRoot ".venv\Scripts\ar.exe"
 
 if (-not (Test-Path $Cli)) {
-    throw "ov-search-skill.exe not found: $Cli. Run: .\.venv\Scripts\python.exe -m pip install -e . --no-deps --no-build-isolation"
+    throw "ar.exe not found: $Cli. Run: .\.venv\Scripts\python.exe -m pip install -e . --no-deps --no-build-isolation"
 }
 
 function Invoke-Step {
@@ -38,24 +33,16 @@ function Invoke-Step {
 }
 
 Write-Output "1. Check OpenViking health"
-Invoke-Step $Ov health
+Invoke-Step $Cli health
 
 Write-Output ""
 Write-Output "2. Import smoke corpus"
-Invoke-Step $Ov add-resource .\examples\smoke_corpus --to $Scope --wait
+Invoke-Step $Cli import-local .\examples\smoke_corpus --to $Scope
 
 Write-Output ""
-Write-Output "3. Wait for background queues"
-Invoke-Step $Ov wait
+Write-Output "3. Show resource tree"
+Invoke-Step $Cli tree $Scope -L 2
 
 Write-Output ""
-Write-Output "4. Show resource tree"
-Invoke-Step $Ov tree $Scope -L 2
-
-Write-Output ""
-Write-Output "5. Search with ov find"
-Invoke-Step $Ov find $Question --uri $Scope
-
-Write-Output ""
-Write-Output "6. Search with project CLI"
-Invoke-Step $Cli search $Question --scope $Scope --top-k 3
+Write-Output "4. Search with project CLI"
+Invoke-Step $Cli search $Question --scope $Scope --top-k 3 --format text --documents-only

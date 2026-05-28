@@ -1,11 +1,11 @@
-import json
+﻿import json
 import tempfile
 import unittest
 from pathlib import Path
 
-from ov_search_skill.cli import _is_generated_summary, _write_json_report
-from ov_search_skill.retrievers.base import SearchResult
-from ov_search_skill.workflows.research import (
+from anyviking_research.cli import _is_generated_summary, _write_json_report
+from anyviking_research.retrievers.base import SearchResult
+from anyviking_research.workflows.research import (
     ResearchQuestion,
     ResearchReport,
     _candidate_limit,
@@ -26,7 +26,7 @@ class CliHelperTests(unittest.TestCase):
         result = SearchResult(
             title="bad",
             uri="viking://resources/demo/bad.md",
-            snippet="抱歉，没有找到相关的结果。",
+            snippet="Sorry, no relevant results were found.",
         )
 
         self.assertTrue(_is_unhelpful_result(result))
@@ -35,7 +35,7 @@ class CliHelperTests(unittest.TestCase):
         result = SearchResult(
             title="bad",
             uri="viking://resources/demo/bad.md",
-            snippet="您的问题我无法回答。",
+            snippet="I am unable to answer this question from the indexed corpus.",
         )
 
         self.assertTrue(_is_unhelpful_result(result))
@@ -44,7 +44,7 @@ class CliHelperTests(unittest.TestCase):
         result = SearchResult(
             title="good",
             uri="viking://resources/demo/good.md",
-            snippet="本文分析特朗普访华期间中美双方的贸易、科技与台湾议题。",
+            snippet="This article analyzes trade, technology, and policy evidence from the indexed corpus.",
         )
 
         self.assertFalse(_is_unhelpful_result(result))
