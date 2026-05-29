@@ -31,7 +31,7 @@ For storage, resource paths, and retrieval behavior, read:
 
 ```text
 src/anyviking_research/cli.py
-  The `ar` command.
+  The `anyviking` command.
 
 src/anyviking_research/connectors/
   Upstream search connectors. Today this means AnySearch.
@@ -46,13 +46,13 @@ src/anyviking_research/retrievers/
 ## Main Flow
 
 ```powershell
-ar sync "OpenViking GitHub" --max-results 3 --output data\web\openviking-github --to viking://resources/openviking-github
+anyviking sync "OpenViking GitHub" --max-results 3 --output data/web/openviking-github --to viking://resources/openviking-github
 ```
 
 Then query the imported scope:
 
 ```powershell
-ar search "What is OpenViking?" --scope viking://resources/openviking-github --format text --documents-only
+anyviking search "What is OpenViking?" --scope viking://resources/openviking-github --format text --documents-only
 ```
 
 ## What This Project Does Not Hide

@@ -4,105 +4,117 @@
 
 ## 中文
 
-AnyViking Research 是一个 CLI 工具，用来把 AnySearch 找到的公网资料保存成本地 markdown，然后导入 OpenViking，让用户自己的 Agent 可以通过 `viking://` 范围检索这些资料。
-
-它不是搜索引擎，也不是 OpenViking 的替代品，也不是完整的 Agent 产品。
+AnyViking Research 是一个 CLI 桥接工具：
 
 ```text
-AnySearch
-  负责公网搜索
-
-AnyViking Research
-  负责保存、整理、导入、查询
-
-OpenViking
-  负责本地资源存储、索引和 viking:// 检索
+AnySearch -> 本地 markdown -> OpenViking -> viking:// 检索
 ```
 
-上游请看 [AnySearch Skill](https://github.com/anysearch-ai/anysearch-skill) 和 [AnySearch 文档](https://www.anysearch.com/docs)。  
-下游请看 [OpenViking](https://github.com/volcengine/OpenViking) 和 [OpenViking 文档](https://docs.openviking.ai/)。
+它负责把 AnySearch 找到的公网资料保存到本地，再导入 OpenViking。之后，用户自己的 Agent 可以通过 `anyviking search`、OpenViking API/CLI，或未来的 MCP server 检索这些资料。
 
-### 当前状态
+它不是搜索引擎，不替代 OpenViking，也不是完整 Agent 产品。
 
-已经实现：
+参考上游项目：
 
-- `ar doctor`：检查本地环境。
-- `ar search-web`：通过 AnySearch 搜索公网。
-- `ar fetch-web`：把搜索结果保存为 raw JSON、markdown 和 manifest。
-- `ar sync`：搜索网页，保存 markdown，然后导入 OpenViking。
-- `ar import-local`：导入已有本地语料。
-- `ar tree`：查看 OpenViking 的 `viking://` 资源树。
-- `ar search`：检索已导入 OpenViking 的资料。
+- [AnySearch Skill](https://github.com/anysearch-ai/anysearch-skill)
+- [AnySearch 文档](https://www.anysearch.com/docs)
+- [OpenViking](https://github.com/volcengine/OpenViking)
+- [OpenViking 文档](https://docs.openviking.ai/)
 
-没有实现：
+### 已实现
 
-- 一键安装包。
-- Docker / docker-compose 部署。
-- Web UI。
-- MCP server。
-- VikingBot 封装。
-- 内置示例语料。
-- 自动写完整调研报告。
+| 命令 | 作用 |
+| --- | --- |
+| `anyviking doctor` | 检查本地环境 |
+| `anyviking health` | 检查 OpenViking 服务 |
+| `anyviking status` | 查看 OpenViking 状态 |
+| `anyviking search-web` | 调用 AnySearch 搜索公网 |
+| `anyviking fetch-web` | 保存搜索结果为 raw JSON、markdown 和 manifest |
+| `anyviking sync` | 搜索、保存，并导入 OpenViking |
+| `anyviking import-local` | 导入已有本地文件 |
+| `anyviking tree` | 查看 `viking://` 资源树 |
+| `anyviking search` | 检索已导入 OpenViking 的资料 |
 
-如果你没有 AnySearch 或 OpenViking，当前不能一条命令跑完整链路。你需要先安装本项目和 OpenViking，并准备好 AnySearch 访问能力。
+暂未实现：Web UI、MCP server、Docker Compose、VikingBot 封装、完整自动报告生成。
 
-### 部署模型
+### 部署关系
 
-这个项目现在是三段式部署：
+这个项目现在仍然是三段式部署：
 
 ```text
 1. AnySearch
-   远端搜索能力。通常通过 API key 或匿名请求访问。
+   远端搜索能力。本项目只调用它，不实现搜索引擎。
 
 2. OpenViking
-   本地服务。需要安装并启动 openviking-server。
+   本地存储、索引和检索服务。
 
 3. AnyViking Research
-   本项目。提供 ar 命令，把两者串起来。
+   本项目。负责保存网页资料、整理成本地 markdown、导入 OpenViking。
 ```
 
-当前没有把这三者打成一个安装包。后续可以考虑：
+安装脚本可以帮你装本项目和 Python 依赖，但不能自动替你申请 AnySearch key，也不能替你配置模型服务密钥。
 
-- Docker Compose。
-- Windows 一键启动脚本。
-- pipx 安装。
-- MCP server 封装。
+### 快速安装
 
-但现在公开仓库先保持 CLI-first，方便调试每一层。
-
-### 安装
-
-先克隆仓库：
+Windows PowerShell：
 
 ```powershell
 git clone https://github.com/liuchenyang111111/anyviking-research.git
 cd anyviking-research
+.\install.ps1
+.\.venv\Scripts\anyviking.exe doctor
 ```
 
-创建虚拟环境：
+如果 PowerShell 阻止脚本执行，可以用：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\install.ps1
+```
+
+Linux / macOS：
+
+```bash
+git clone https://github.com/liuchenyang111111/anyviking-research.git
+cd anyviking-research
+./install.sh
+source .venv/bin/activate
+anyviking doctor
+```
+
+安装开发依赖：
+
+```powershell
+.\install.ps1 -Dev
+```
+
+```bash
+./install.sh --dev
+```
+
+### 手动安装
+
+Windows：
 
 ```powershell
 py -3.12 -m venv .venv
 .\.venv\Scripts\Activate.ps1
-```
-
-安装项目和 OpenViking 依赖：
-
-```powershell
 python -m pip install --upgrade pip setuptools wheel
 python -m pip install -e .[openviking] --no-build-isolation
 ```
 
-开发者可以安装额外打包工具：
+Linux / macOS：
 
-```powershell
-python -m pip install -e .[dev,openviking] --no-build-isolation
+```bash
+python3.12 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip setuptools wheel
+python -m pip install -e '.[openviking]' --no-build-isolation
 ```
 
-如果没有激活虚拟环境，可以直接运行：
+开发者额外安装打包工具：
 
-```powershell
-.\.venv\Scripts\ar.exe doctor
+```bash
+python -m pip install -e '.[dev,openviking]' --no-build-isolation
 ```
 
 ### 配置 OpenViking
@@ -114,7 +126,14 @@ Copy-Item config\ov.conf.example config\ov.conf
 Copy-Item config\ovcli.conf.example config\ovcli.conf
 ```
 
-编辑 `config\ov.conf`，填入你自己的模型服务配置。真实配置文件不要提交到 Git。
+Linux / macOS：
+
+```bash
+cp config/ov.conf.example config/ov.conf
+cp config/ovcli.conf.example config/ovcli.conf
+```
+
+编辑 `config/ov.conf`，填入你自己的模型服务配置。真实配置文件已被 `.gitignore` 忽略。
 
 启动 OpenViking：
 
@@ -122,15 +141,27 @@ Copy-Item config\ovcli.conf.example config\ovcli.conf
 .\scripts\start_openviking.ps1
 ```
 
+```bash
+./scripts/start_openviking.sh
+```
+
 检查服务：
 
+```bash
+anyviking health
+```
+
+停止 OpenViking：
+
 ```powershell
-ar health
+.\scripts\stop_openviking.ps1
+```
+
+```bash
+./scripts/stop_openviking.sh
 ```
 
 ### 配置 AnySearch
-
-AnySearch 是上游搜索能力。项目里只调用它，不实现它。
 
 如果你有 AnySearch key：
 
@@ -138,84 +169,69 @@ AnySearch 是上游搜索能力。项目里只调用它，不实现它。
 $env:ANYSEARCH_API_KEY = "your-key"
 ```
 
-如果没有 key，可以先试匿名请求，但稳定性和额度取决于 AnySearch 服务。
+Linux / macOS：
 
-### 一次跑通完整流程
-
-检查环境：
-
-```powershell
-ar doctor
+```bash
+export ANYSEARCH_API_KEY="your-key"
 ```
+
+没有 key 时可以先试匿名请求，但稳定性和额度取决于 AnySearch 服务。
+
+### 跑通主流程
 
 只搜索公网：
 
-```powershell
-ar search-web "OpenViking GitHub" --max-results 3
+```bash
+anyviking search-web "OpenViking GitHub" --max-results 3
 ```
 
 保存搜索结果到本地：
 
-```powershell
-ar fetch-web "OpenViking GitHub" --max-results 3 --output data\web\openviking-github
+```bash
+anyviking fetch-web "OpenViking GitHub" --max-results 3 --output data/web/openviking-github
 ```
 
 保存并导入 OpenViking：
 
-```powershell
-ar sync "OpenViking GitHub" --max-results 3 --output data\web\openviking-github --to viking://resources/openviking-github
+```bash
+anyviking sync "OpenViking GitHub" --max-results 3 --output data/web/openviking-github --to viking://resources/openviking-github
 ```
 
 查看资源树：
 
-```powershell
-ar tree viking://resources/openviking-github -L 2
+```bash
+anyviking tree viking://resources/openviking-github -L 2
 ```
 
 检索已导入资料：
 
-```powershell
-ar search "What is OpenViking?" --scope viking://resources/openviking-github --top-k 3 --format text --documents-only
+```bash
+anyviking search "What is OpenViking?" --scope viking://resources/openviking-github --top-k 3 --format text --documents-only
 ```
-
-### 常用命令和参数
-
-| 命令 | 作用 | 常用参数 |
-| --- | --- | --- |
-| `ar doctor` | 检查环境 | `--json` |
-| `ar health` | 检查 OpenViking 服务 | `--url` |
-| `ar search-web` | 搜索公网 | `--max-results`, `--domain`, `--language`, `--freshness` |
-| `ar fetch-web` | 搜索并保存本地文件 | `--output`, `--max-results` |
-| `ar sync` | 搜索、保存并导入 OpenViking | `--output`, `--to`, `--max-results` |
-| `ar import-local` | 导入本地语料 | `--to` |
-| `ar tree` | 查看资源树 | `-L` |
-| `ar search` | 检索 OpenViking | `--scope`, `--top-k`, `--format`, `--documents-only` |
 
 ### Agent 怎么读取资料
 
-`viking://resources/...` 不是普通文件路径。Agent 不能靠字符串本身读取内容。
+`viking://resources/...` 是 OpenViking 的虚拟 URI，不是普通文件路径。
 
-Agent 需要一个工具，例如：
+Agent 需要调用一个工具来读它，例如：
 
-```powershell
-ar search "your question" --scope viking://resources/your-topic --format json --documents-only
+```bash
+anyviking search "your question" --scope viking://resources/your-topic --format json --documents-only
 ```
 
-也可以让用户自己的 Agent 直接接 OpenViking API、OpenViking CLI，或者后续接 MCP server。
+也可以让 Agent 直接接 OpenViking API/CLI。VikingBot 不是必须的。
 
-不需要 VikingBot。VikingBot 只是另一种上层封装。
+### 本地输出
 
-### 输出目录
-
-这些目录都是本地运行产物，不上传 GitHub：
+这些都是本地运行产物，不应该提交：
 
 ```text
-data/       fetch-web 和 sync 保存的网页资料
-reports/    本地生成输出，如果某些命令需要
-workspace/  OpenViking 本地工作区
+data/       AnySearch 结果和 markdown 文件
+workspace/  OpenViking 本地数据库、索引、日志
+reports/    本地生成输出，如果后续命令需要
 ```
 
-真实配置也不上传：
+这些也不会提交：
 
 ```text
 config/ov.conf
@@ -225,163 +241,217 @@ config/ovcli.conf
 
 ### 常见问题
 
-#### `ar` 找不到
+#### `anyviking` 找不到
 
-先确认虚拟环境是否激活。也可以直接用：
+先确认虚拟环境已经激活。也可以直接运行：
 
 ```powershell
-.\.venv\Scripts\ar.exe doctor
+.\.venv\Scripts\anyviking.exe doctor
+```
+
+Linux / macOS：
+
+```bash
+.venv/bin/anyviking doctor
 ```
 
 #### OpenViking 连接失败
 
-先启动服务：
+先确认配置文件存在，再启动服务：
+
+```bash
+anyviking doctor
+./scripts/start_openviking.sh
+anyviking health
+```
+
+Windows 使用：
 
 ```powershell
 .\scripts\start_openviking.ps1
-```
-
-再检查：
-
-```powershell
-ar health
+anyviking health
 ```
 
 #### AnySearch 请求失败
 
-可能原因：
+常见原因：
 
-- 没有网络。
-- AnySearch 服务拒绝请求。
-- 匿名额度不稳定。
+- 网络不可用。
+- AnySearch 拒绝匿名请求。
 - API key 没有设置。
+- 请求参数过窄，导致没有结果。
 
-可以设置：
-
-```powershell
-$env:ANYSEARCH_API_KEY = "your-key"
-```
+先设置 `ANYSEARCH_API_KEY`，再用较小的 `--max-results` 测试。
 
 #### 导入成功但搜不到
 
-可以检查：
+先看导入位置是否正确：
 
-```powershell
-ar tree viking://resources/your-topic -L 2
+```bash
+anyviking tree viking://resources/your-topic -L 2
 ```
 
-然后增大检索数量：
+再放大检索数量：
 
-```powershell
-ar search "question" --scope viking://resources/your-topic --top-k 10 --format text --documents-only
+```bash
+anyviking search "question" --scope viking://resources/your-topic --top-k 10 --format text --documents-only
 ```
 
-### 项目结构
+更多排错见 [docs/troubleshooting.md](docs/troubleshooting.md)。
 
-```text
-src/anyviking_research/     Python 源码
-tests/                      单元测试
-config/                     OpenViking 配置模板
-scripts/                    启停 OpenViking 的脚本
-skills/anyviking-research/  Agent Skill 包
-docs/                       补充文档
-```
+### 发布状态
 
-### 测试
+当前推荐从源码安装。PyPI / TestPyPI 发布工作流已准备好，但实际发布需要仓库所有者在 PyPI 和 TestPyPI 配置 Trusted Publishing，或提供发布凭据。步骤见 [docs/publishing.md](docs/publishing.md)。
 
-```powershell
+### 开发检查
+
+```bash
 python -m unittest discover -s tests
 python -m compileall -q src tests
+python -m build
+python -m twine check dist/*
 ```
 
 ## English
 
-AnyViking Research is a CLI bridge that saves public web search results as local markdown files, imports them into OpenViking, and lets another Agent retrieve them through a `viking://` scope.
-
-It is not a search engine, not a replacement for OpenViking, and not a full Agent product.
+AnyViking Research is a CLI bridge:
 
 ```text
-AnySearch
-  discovers public web sources
-
-AnyViking Research
-  saves, normalizes, imports, and queries
-
-OpenViking
-  stores local resources and returns viking:// retrieval results
+AnySearch -> local markdown -> OpenViking -> viking:// retrieval
 ```
 
-Upstream search is based on [AnySearch Skill](https://github.com/anysearch-ai/anysearch-skill) and [AnySearch docs](https://www.anysearch.com/docs).  
-Local indexing and retrieval are based on [OpenViking](https://github.com/volcengine/OpenViking) and [OpenViking docs](https://docs.openviking.ai/).
+It saves public web results from AnySearch, writes them as local markdown, and imports them into OpenViking. Another Agent can then retrieve the indexed material through `anyviking search`, the OpenViking API/CLI, or a future MCP server.
 
-### Current Status
+It is not a search engine, not an OpenViking replacement, and not a full Agent product.
 
-Implemented:
+Upstream references:
 
-- `ar doctor`
-- `ar search-web`
-- `ar fetch-web`
-- `ar sync`
-- `ar import-local`
-- `ar tree`
-- `ar search`
+- [AnySearch Skill](https://github.com/anysearch-ai/anysearch-skill)
+- [AnySearch docs](https://www.anysearch.com/docs)
+- [OpenViking](https://github.com/volcengine/OpenViking)
+- [OpenViking docs](https://docs.openviking.ai/)
 
-Not implemented:
+### Implemented
 
-- one-click installer
-- Docker / docker-compose
-- Web UI
-- MCP server
-- VikingBot wrapper
-- bundled demo corpus
-- automatic final report generation
+| Command | Purpose |
+| --- | --- |
+| `anyviking doctor` | Check local readiness |
+| `anyviking health` | Check the OpenViking service |
+| `anyviking status` | Show OpenViking status |
+| `anyviking search-web` | Search public web sources through AnySearch |
+| `anyviking fetch-web` | Save results as raw JSON, markdown, and a manifest |
+| `anyviking sync` | Search, save, and import into OpenViking |
+| `anyviking import-local` | Import existing local files |
+| `anyviking tree` | Inspect a `viking://` resource tree |
+| `anyviking search` | Search indexed OpenViking data |
 
-### Install
+Not implemented yet: Web UI, MCP server, Docker Compose, VikingBot wrapper, and automatic full report generation.
+
+### Deployment Model
+
+```text
+1. AnySearch
+   Remote web search. This project calls it but does not implement it.
+
+2. OpenViking
+   Local storage, indexing, and retrieval.
+
+3. AnyViking Research
+   This package. It saves web material, writes markdown, and imports it.
+```
+
+The install scripts set up this package and Python dependencies. They cannot create AnySearch credentials or model-provider credentials for you.
+
+### Quick Install
+
+Windows PowerShell:
 
 ```powershell
 git clone https://github.com/liuchenyang111111/anyviking-research.git
 cd anyviking-research
+.\install.ps1
+.\.venv\Scripts\anyviking.exe doctor
+```
+
+Linux / macOS:
+
+```bash
+git clone https://github.com/liuchenyang111111/anyviking-research.git
+cd anyviking-research
+./install.sh
+source .venv/bin/activate
+anyviking doctor
+```
+
+### Manual Install
+
+Windows:
+
+```powershell
 py -3.12 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip setuptools wheel
 python -m pip install -e .[openviking] --no-build-isolation
 ```
 
-### Configure
+Linux / macOS:
 
-```powershell
-Copy-Item config\ov.conf.example config\ov.conf
-Copy-Item config\ovcli.conf.example config\ovcli.conf
+```bash
+python3.12 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip setuptools wheel
+python -m pip install -e '.[openviking]' --no-build-isolation
 ```
 
-Edit `config\ov.conf` and set your own model provider credentials.
+### Configure
+
+Copy OpenViking config templates, then edit `config/ov.conf` with your own model-provider settings:
+
+```bash
+cp config/ov.conf.example config/ov.conf
+cp config/ovcli.conf.example config/ovcli.conf
+```
+
+Start OpenViking:
+
+```bash
+./scripts/start_openviking.sh
+anyviking health
+```
 
 Optional AnySearch key:
 
-```powershell
-$env:ANYSEARCH_API_KEY = "your-key"
+```bash
+export ANYSEARCH_API_KEY="your-key"
 ```
 
 ### Run
 
-```powershell
-.\scripts\start_openviking.ps1
-ar doctor
-ar search-web "OpenViking GitHub" --max-results 3
-ar sync "OpenViking GitHub" --max-results 3 --output data\web\openviking-github --to viking://resources/openviking-github
-ar search "What is OpenViking?" --scope viking://resources/openviking-github --top-k 3 --format text --documents-only
+```bash
+anyviking search-web "OpenViking GitHub" --max-results 3
+anyviking fetch-web "OpenViking GitHub" --max-results 3 --output data/web/openviking-github
+anyviking sync "OpenViking GitHub" --max-results 3 --output data/web/openviking-github --to viking://resources/openviking-github
+anyviking search "What is OpenViking?" --scope viking://resources/openviking-github --top-k 3 --format text --documents-only
 ```
 
 ### Notes For Agents
 
-`viking://` is a virtual OpenViking URI. An Agent needs a tool such as `ar search`, OpenViking CLI/API, or a future MCP server to read it.
+`viking://` is a virtual OpenViking URI, not a normal file path. An Agent needs a tool such as `anyviking search`, OpenViking CLI/API, or a future MCP server to read it.
 
-### Tests
+### Troubleshooting
 
-```powershell
+See [docs/troubleshooting.md](docs/troubleshooting.md).
+
+### Tests And Packaging
+
+```bash
 python -m unittest discover -s tests
 python -m compileall -q src tests
+python -m build
+python -m twine check dist/*
 ```
+
+Publishing to TestPyPI/PyPI is prepared through GitHub Actions, but it requires repository-owner Trusted Publishing setup. See [docs/publishing.md](docs/publishing.md).
 
 ## License
 

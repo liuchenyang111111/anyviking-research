@@ -16,7 +16,7 @@ Describe what changed and why.
 
 - [ ] `python -m unittest discover -s tests`
 - [ ] `python -m compileall -q src tests`
-- [ ] `ar doctor`
+- [ ] `anyviking doctor`
 - [ ] Live smoke test, if OpenViking behavior changed
 
 ## Notes

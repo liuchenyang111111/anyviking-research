@@ -23,7 +23,7 @@ from anyviking_research.workflows.fetch_web import (
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="ar",
+        prog="anyviking",
         description=(
             "AnySearch upstream web discovery plus OpenViking downstream "
             "indexing and retrieval."

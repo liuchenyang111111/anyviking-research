@@ -44,4 +44,4 @@ Use this when the user or their Agent already knows the `viking://` scope.
 
 ## Important Point
 
-`viking://` is a virtual OpenViking URI. An Agent needs a tool such as `ar search` or another OpenViking adapter to read it.
+`viking://` is a virtual OpenViking URI. An Agent needs a tool such as `anyviking search` or another OpenViking adapter to read it.

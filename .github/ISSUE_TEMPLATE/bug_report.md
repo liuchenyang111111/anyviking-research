@@ -19,7 +19,7 @@ What did you expect to happen?
 Paste the output of:
 
 ```powershell
-ar doctor --json
+anyviking doctor --json
 ```
 
 ## Logs or command output

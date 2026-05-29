@@ -23,31 +23,31 @@ Do not treat it as a Web UI, hosted service, VikingBot replacement, or full repo
 Check the environment:
 
 ```powershell
-ar doctor
+anyviking doctor
 ```
 
 Search the web:
 
 ```powershell
-ar search-web "AI search tools" --max-results 5
+anyviking search-web "AI search tools" --max-results 5
 ```
 
 Save web results locally:
 
 ```powershell
-ar fetch-web "AI search tools" --max-results 5 --output data\web\ai-search-tools
+anyviking fetch-web "AI search tools" --max-results 5 --output data\web\ai-search-tools
 ```
 
 Save and import into OpenViking:
 
 ```powershell
-ar sync "AI search tools" --max-results 5 --output data\web\ai-search-tools --to viking://resources/ai-search-tools
+anyviking sync "AI search tools" --max-results 5 --output data\web\ai-search-tools --to viking://resources/ai-search-tools
 ```
 
 Search a known OpenViking scope:
 
 ```powershell
-ar search "What does this corpus say?" --scope viking://resources/ai-search-tools --top-k 5 --format text --documents-only
+anyviking search "What does this corpus say?" --scope viking://resources/ai-search-tools --top-k 5 --format text --documents-only
 ```
 
 ## Keep Local

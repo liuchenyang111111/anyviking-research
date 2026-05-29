@@ -18,10 +18,10 @@ Only `.example` config files belong in the repository.
 
 ## Runtime Notes
 
-- `ar search-web` calls AnySearch.
-- `ar fetch-web` and `ar sync` can save public web snippets locally.
-- `ar sync` and `ar import-local` send local files to the local OpenViking service for indexing.
-- `ar search` reads indexed OpenViking results from a known `viking://` scope.
+- `anyviking search-web` calls AnySearch.
+- `anyviking fetch-web` and `anyviking sync` can save public web snippets locally.
+- `anyviking sync` and `anyviking import-local` send local files to the local OpenViking service for indexing.
+- `anyviking search` reads indexed OpenViking results from a known `viking://` scope.
 
 Review generated local files before sharing them.
 

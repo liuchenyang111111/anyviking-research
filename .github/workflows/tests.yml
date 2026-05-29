@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-latest]
+        os: [windows-latest, ubuntu-latest, macos-latest]
 
     steps:
       - name: Check out repository
@@ -26,6 +26,9 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel
           python -m pip install -e .
 
+      - name: Check CLI entry point
+        run: anyviking --help
+
       - name: Run unit tests
         run: python -m unittest discover -s tests
 
@@ -33,7 +36,11 @@ jobs:
         run: python -m compileall -q src tests
 
   package:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
 
     steps:
       - name: Check out repository

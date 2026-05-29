@@ -38,6 +38,11 @@ dependencies = [
     "PyYAML>=6",
 ]
 
+[project.urls]
+Homepage = "https://github.com/liuchenyang111111/anyviking-research"
+Repository = "https://github.com/liuchenyang111111/anyviking-research"
+Issues = "https://github.com/liuchenyang111111/anyviking-research/issues"
+
 [project.optional-dependencies]
 openviking = [
     "openviking>=0.3.17",
@@ -48,7 +53,7 @@ dev = [
 ]
 
 [project.scripts]
-ar = "anyviking_research.cli:main"
+anyviking = "anyviking_research.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

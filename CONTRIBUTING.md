@@ -22,7 +22,7 @@ Run:
 ```powershell
 python -m unittest discover -s tests
 python -m compileall -q src tests
-ar doctor
+anyviking doctor
 ```
 
 If you changed AnySearch behavior, test with a low `--max-results` value.
@@ -31,7 +31,7 @@ If you changed OpenViking behavior, run a small local import/search check with y
 
 ## Guidelines
 
-- Keep `ar` stable and script-friendly.
+- Keep `anyviking` stable and script-friendly.
 - Keep AnySearch code in `connectors/`.
 - Keep OpenViking retrieval code in `retrievers/`.
 - Put simple multi-step file workflows in `workflows/`.

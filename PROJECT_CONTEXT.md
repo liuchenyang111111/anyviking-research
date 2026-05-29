@@ -10,13 +10,13 @@ Build a small CLI bridge:
 AnySearch -> local markdown -> OpenViking -> viking:// retrieval
 ```
 
-The project should help users put fresh web material into OpenViking. Their own Agent can then read the indexed data with `ar search` or another OpenViking adapter.
+The project should help users put fresh web material into OpenViking. Their own Agent can then read the indexed data with `anyviking search` or another OpenViking adapter.
 
 ## Current Shape
 
 Current focus:
 
-- Python package and `ar` CLI.
+- Python package and `anyviking` CLI.
 - AnySearch public-web discovery.
 - Markdown materialization under `data/`.
 - Sync into OpenViking resources.

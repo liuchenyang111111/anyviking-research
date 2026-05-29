@@ -35,13 +35,13 @@ python -m compileall -q src tests
 Optional environment check:
 
 ```powershell
-ar doctor
+anyviking doctor
 ```
 
 For a live AnySearch/OpenViking check, keep the result count low:
 
 ```powershell
-ar sync "OpenViking GitHub" --max-results 2 --output data\web\openviking-github --to viking://resources/openviking-github
+anyviking sync "OpenViking GitHub" --max-results 2 --output data\web\openviking-github --to viking://resources/openviking-github
 ```
 
 ## Packaging
@@ -52,5 +52,7 @@ Build and inspect the package:
 python -m build
 python -m twine check dist\*
 ```
+
+For TestPyPI/PyPI, use the GitHub Actions publishing workflow after Trusted Publishing is configured for this repository.
 
 Before publishing or committing, confirm that no secrets or runtime artifacts are staged.
