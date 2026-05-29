@@ -52,9 +52,9 @@ if [ -f "$PID_FILE" ]; then
 fi
 
 if [ "$STOPPED" -eq 0 ] && command -v pkill >/dev/null 2>&1; then
-  if pgrep -f openviking-server >/dev/null 2>&1; then
-    echo "Stopping openviking-server processes found by name."
-    pkill -f openviking-server
+  if pgrep -f "openviking_cli.server_bootstrap|openviking-server" >/dev/null 2>&1; then
+    echo "Stopping OpenViking server processes found by name."
+    pkill -f "openviking_cli.server_bootstrap|openviking-server"
     STOPPED=1
   fi
 fi

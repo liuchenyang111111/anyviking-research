@@ -7,12 +7,13 @@ param(
 $ErrorActionPreference = "Stop"
 
 $ProjectRoot = Resolve-Path (Join-Path $PSScriptRoot "..")
-$Server = Join-Path $ProjectRoot ".venv\Scripts\openviking-server.exe"
+$Python = Join-Path $ProjectRoot ".venv\Scripts\python.exe"
 $Config = Resolve-Path (Join-Path $ProjectRoot $ConfigPath)
 $BaseUrl = "http://${HostName}:$Port"
+$PidFile = Join-Path $ProjectRoot "workspace\.openviking.pid"
 
-if (-not (Test-Path $Server)) {
-    throw "openviking-server not found: $Server. Activate .venv and install openviking first."
+if (-not (Test-Path $Python)) {
+    throw "Python not found in virtual environment: $Python. Run install.ps1 first."
 }
 
 try {
@@ -29,11 +30,14 @@ $env:PYTHONIOENCODING = "utf-8"
 $env:PYTHONUTF8 = "1"
 
 $process = Start-Process `
-    -FilePath $Server `
-    -ArgumentList @("--config", $Config.Path, "--host", $HostName, "--port", [string]$Port) `
+    -FilePath $Python `
+    -ArgumentList @("-m", "openviking_cli.server_bootstrap", "--config", $Config.Path, "--host", $HostName, "--port", [string]$Port) `
     -WorkingDirectory $ProjectRoot `
     -WindowStyle Hidden `
     -PassThru
+
+New-Item -ItemType Directory -Force -Path (Split-Path -Parent $PidFile) | Out-Null
+Set-Content -Path $PidFile -Value $process.Id -Encoding ASCII
 
 Start-Sleep -Seconds 8
 

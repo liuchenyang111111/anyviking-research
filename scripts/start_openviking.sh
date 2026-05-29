@@ -33,7 +33,7 @@ done
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-SERVER="$PROJECT_ROOT/.venv/bin/openviking-server"
+PYTHON_BIN="$PROJECT_ROOT/.venv/bin/python"
 CONFIG="$PROJECT_ROOT/$CONFIG_PATH"
 BASE_URL="http://$HOST_NAME:$PORT"
 LOG_DIR="$PROJECT_ROOT/workspace/logs"
@@ -53,8 +53,8 @@ raise SystemExit(0 if healthy else 1)
 PY
 }
 
-if [ ! -x "$SERVER" ]; then
-  echo "openviking-server not found: $SERVER. Activate .venv and install openviking first." >&2
+if [ ! -x "$PYTHON_BIN" ]; then
+  echo "Python not found in virtual environment: $PYTHON_BIN. Run install.sh first." >&2
   exit 2
 fi
 
@@ -70,7 +70,7 @@ fi
 
 mkdir -p "$LOG_DIR"
 
-PYTHONIOENCODING=utf-8 PYTHONUTF8=1 nohup "$SERVER" \
+PYTHONIOENCODING=utf-8 PYTHONUTF8=1 nohup "$PYTHON_BIN" -m openviking_cli.server_bootstrap \
   --config "$CONFIG" \
   --host "$HOST_NAME" \
   --port "$PORT" \
