@@ -7,7 +7,8 @@ This project is small on purpose. Good changes usually make the CLI easier to in
 ## Setup
 
 ```powershell
-cd D:\Github\anyviking-research
+git clone https://github.com/liuchenyang111111/anyviking-research.git
+cd anyviking-research
 py -3.12 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip setuptools wheel

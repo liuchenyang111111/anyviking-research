@@ -14,12 +14,6 @@ The project should help users put fresh web material into OpenViking. Their own 
 
 ## Current Shape
 
-Repository path:
-
-```text
-D:\Github\anyviking-research
-```
-
 Current focus:
 
 - Python package and `ar` CLI.
