@@ -35,8 +35,6 @@ AnySearch -> 本地 markdown -> OpenViking -> viking:// 检索
 | `anyviking tree` | 查看 `viking://` 资源树 |
 | `anyviking search` | 检索已导入 OpenViking 的资料 |
 
-暂未实现：Web UI、MCP server、Docker Compose、VikingBot 封装、完整自动报告生成。
-
 ### 部署关系
 
 这个项目现在仍然是三段式部署：
@@ -301,7 +299,7 @@ anyviking search "question" --scope viking://resources/your-topic --top-k 10 --f
 
 ### 发布状态
 
-当前推荐从源码安装。PyPI / TestPyPI 发布工作流已准备好，但实际发布需要仓库所有者在 PyPI 和 TestPyPI 配置 Trusted Publishing，或提供发布凭据。步骤见 [docs/publishing.md](docs/publishing.md)。
+当前推荐从源码安装。PyPI / TestPyPI 发布工作流已准备好，但实际发布需要仓库所有者在 PyPI 和 TestPyPI 配置 Trusted Publishing，或提供发布凭据。
 
 ### 开发检查
 
@@ -344,8 +342,6 @@ Upstream references:
 | `anyviking import-local` | Import existing local files |
 | `anyviking tree` | Inspect a `viking://` resource tree |
 | `anyviking search` | Search indexed OpenViking data |
-
-Not implemented yet: Web UI, MCP server, Docker Compose, VikingBot wrapper, and automatic full report generation.
 
 ### Deployment Model
 
@@ -451,7 +447,7 @@ python -m build
 python -m twine check dist/*
 ```
 
-Publishing to TestPyPI/PyPI is prepared through GitHub Actions, but it requires repository-owner Trusted Publishing setup. See [docs/publishing.md](docs/publishing.md).
+Publishing to TestPyPI/PyPI is prepared through GitHub Actions, but it requires repository-owner Trusted Publishing setup.
 
 ## License
 

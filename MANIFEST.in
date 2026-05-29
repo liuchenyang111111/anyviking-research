@@ -7,7 +7,11 @@ include .env.example
 include install.ps1
 include install.sh
 recursive-include config *.example
-recursive-include docs *.md
+include docs/architecture.md
+include docs/cli_reference.md
+include docs/configuration.md
+include docs/development.md
+include docs/troubleshooting.md
 recursive-include skills *.md *.yaml
 recursive-include scripts *.ps1 *.sh
 recursive-include tests *.py
