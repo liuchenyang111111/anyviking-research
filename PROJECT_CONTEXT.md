@@ -1,16 +1,16 @@
 # Project Context
 
-This file is a short memory entry for the repository owner and AI helpers.
+This is a short memory entry for the repository owner and AI helpers.
 
 ## Goal
 
-Build a reusable CLI workflow that treats:
+Build a small CLI bridge:
 
 ```text
-AnySearch as the upstream discovery layer
-OpenViking as the downstream indexing and retrieval layer
-AnyViking Research as the workflow layer between them
+AnySearch -> local markdown -> OpenViking -> viking:// retrieval
 ```
+
+The project should help users put fresh web material into OpenViking. Their own Agent can then read the indexed data with `ar search` or another OpenViking adapter.
 
 ## Current Shape
 
@@ -22,18 +22,21 @@ D:\Github\anyviking-research
 
 Current focus:
 
-- Python package and `ar` CLI
-- OpenViking health, import, tree, and search operations
-- AnySearch upstream discovery
-- Local markdown materialization and sync into OpenViking
-- Retrieval-backed research drafts
-- One minimal local demo corpus under `examples/smoke_corpus`
-- One packaged agent skill under `skills/anyviking-research`
+- Python package and `ar` CLI.
+- AnySearch public-web discovery.
+- Markdown materialization under `data/`.
+- Sync into OpenViking resources.
+- Search against a known `viking://` scope.
+- Packaged Agent Skill under `skills/anyviking-research`.
 
-Not in scope yet:
+Not in public repo scope:
 
+- bundled example corpus
+- generated reports
+- roadmap/changelog notes
 - Web UI
 - hosted service
 - MCP server
+- VikingBot
 - autonomous planner
-- full LLM-written final reports
+- full report generation

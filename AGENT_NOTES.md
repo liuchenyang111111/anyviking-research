@@ -1,54 +1,55 @@
 # Agent Notes
 
-This repo-local agent note is the lightweight version used inside the repository.
-The only formal skill in this repo lives at `skills/anyviking-research/SKILL.md`.
+This is a short repo-local note for maintainers and AI helpers.
 
-## Use This Workflow For
+The formal Skill package is:
 
-- AnySearch public-web discovery.
-- Saving web results as local markdown files.
-- Importing local markdown into OpenViking.
-- Searching a known `viking://` corpus.
-- Generating a retrieval-backed draft with `ar research`.
+```text
+skills/anyviking-research/SKILL.md
+```
 
-## Core Commands
+## Project Job
+
+Use this project as a bridge:
+
+```text
+AnySearch -> markdown files -> OpenViking -> viking:// retrieval
+```
+
+Do not treat it as a Web UI, hosted service, VikingBot replacement, or full report writer.
+
+## Usual Commands
+
+Check the environment:
 
 ```powershell
 ar doctor
 ```
 
-```powershell
-ar health
-```
+Search the web:
 
 ```powershell
 ar search-web "AI search tools" --max-results 5
 ```
 
+Save web results locally:
+
 ```powershell
 ar fetch-web "AI search tools" --max-results 5 --output data\web\ai-search-tools
 ```
+
+Save and import into OpenViking:
 
 ```powershell
 ar sync "AI search tools" --max-results 5 --output data\web\ai-search-tools --to viking://resources/ai-search-tools
 ```
 
-```powershell
-ar import-local .\examples\smoke_corpus --to viking://resources/smoke-corpus
-```
+Search a known OpenViking scope:
 
 ```powershell
-ar search "What is the core purpose of the second phase?" --scope viking://resources/smoke-corpus --top-k 3 --format text --documents-only
+ar search "What does this corpus say?" --scope viking://resources/ai-search-tools --top-k 5 --format text --documents-only
 ```
 
-```powershell
-ar research examples\smoke_corpus\research_questions.yaml --output reports\smoke_corpus_research.md --top-k 3
-```
+## Keep Local
 
-## Notes
-
-- Prefer `--scope` when the target corpus is known.
-- Use `search-web` for search-only tasks.
-- Use `fetch-web` or `sync` when the results should be saved and reused.
-- Use the smoke corpus for the smallest local demo.
-- Do not commit `.env`, `config/ov.conf`, `config/ovcli.conf`, `data/`, or `reports/`.
+Do not commit `.env`, real config files, `data/`, `reports/`, `workspace/`, roadmap notes, changelog notes, or generated corpora.

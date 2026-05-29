@@ -1,20 +1,24 @@
-﻿# CLI Reference
+# CLI Reference
 
-The command line entry point is `ar`.
+The command is `ar`.
 
-## Environment Check
+If your virtual environment is not active, use:
+
+```powershell
+.\.venv\Scripts\ar.exe doctor
+```
+
+## Check Environment
 
 ```powershell
 ar doctor
 ```
 
-Checks Python, package installation, OpenViking package, OpenViking executable, local config, optional AnySearch key, and OpenViking server health.
+Use JSON output when another tool or Agent needs to parse the result:
 
 ```powershell
 ar doctor --json
 ```
-
-Prints machine-readable check results.
 
 ## OpenViking Service
 
@@ -22,47 +26,31 @@ Prints machine-readable check results.
 ar health
 ```
 
-Checks `http://127.0.0.1:1933/health` by default.
-
 ```powershell
 ar status
 ```
-
-Shows OpenViking service, queue, model, retrieval, and filesystem status.
 
 ```powershell
 ar status --json
 ```
 
-Prints raw OpenViking JSON status.
-
-## Resource Management
+## Import Local Files
 
 ```powershell
-ar import-local <path> --to <viking-uri>
+ar import-local .\path\to\corpus --to viking://resources/my-corpus
 ```
 
-Imports a local file or folder into OpenViking.
+Show the resource tree:
 
 ```powershell
-ar tree <viking-uri> -L 2
+ar tree viking://resources/my-corpus -L 2
 ```
 
-Shows a resource tree.
-
-## AnySearch Upstream
+## Search Public Web
 
 ```powershell
 ar search-web "query" --max-results 5
 ```
-
-Searches public web material with AnySearch and prints normalized results.
-
-```powershell
-ar search-web "query" --max-results 5 --format json
-```
-
-Prints normalized JSON.
 
 Useful filters:
 
@@ -70,13 +58,13 @@ Useful filters:
 ar search-web "query" --domain github.com --language en --freshness week
 ```
 
-## Materialize Web Results
+## Save Web Results Locally
 
 ```powershell
 ar fetch-web "query" --max-results 5 --output data\web\topic-name
 ```
 
-Writes:
+This writes:
 
 ```text
 data\web\topic-name\raw\anysearch_response.json
@@ -84,55 +72,22 @@ data\web\topic-name\markdown\*.md
 data\web\topic-name\manifest.json
 ```
 
-## Sync Web Results Into OpenViking
+## Save And Import Into OpenViking
 
 ```powershell
 ar sync "query" --max-results 5 --output data\web\topic-name --to viking://resources/topic-name
 ```
 
-This is the full AnySearch -> markdown -> OpenViking import path.
+This is the main command for the project.
 
-## Search Indexed Corpus
+## Search Indexed Data
 
 ```powershell
 ar search "question" --scope viking://resources/topic-name --top-k 5
 ```
 
-Default output is JSON.
+Text output is easier for humans:
 
 ```powershell
 ar search "question" --scope viking://resources/topic-name --format text --documents-only
-```
-
-Text output is easier to read. `--documents-only` filters generated `.abstract.md` and `.overview.md` files.
-
-## Research Drafts
-
-```powershell
-ar research examples\smoke_corpus\research_questions.yaml --output reports\smoke_corpus_research.md
-```
-
-The YAML file should include:
-
-```yaml
-topic_title: "Demo research"
-ov_root_uri: "viking://resources/demo"
-sections:
-  - id: overview
-    heading: "Overview"
-    question: "What is this corpus about?"
-```
-
-Useful options:
-
-```powershell
-ar research questions.yaml --output reports\draft.md --json-output reports\draft.json
-```
-
-```powershell
-ar research questions.yaml --output reports\draft.md --top-k 5 --fetch-k 20
-```
-
-```powershell
-ar research questions.yaml --output reports\draft.md --dedupe section --min-results-per-section 2
 ```

@@ -14,7 +14,7 @@ Which layer does this touch?
 
 - [ ] AnySearch connector
 - [ ] OpenViking retriever/import
-- [ ] Research workflow
+- [ ] Web-to-OpenViking sync workflow
 - [ ] CLI
 - [ ] Documentation
 - [ ] MCP / bot / UI wrapper

@@ -1,7 +1,7 @@
 interface:
   display_name: "AnyViking Research"
-  short_description: "Search, index, retrieve, and draft research with AnySearch plus OpenViking."
-  default_prompt: "Use $anyviking-research to search sources, index them with OpenViking, and produce a retrieval-backed research draft."
+  short_description: "Search public web sources, index them with OpenViking, and query viking:// resources."
+  default_prompt: "Use $anyviking-research to search sources, index them with OpenViking, and query the resulting viking:// scope."
 
 policy:
   allow_implicit_invocation: true

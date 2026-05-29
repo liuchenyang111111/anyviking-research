@@ -1,42 +1,47 @@
 # Workflow Guide
 
-## Choose the Smallest Useful Path
+Use the smallest command that satisfies the user request.
 
-If the user only wants fresh results from the web:
+## Search Only
 
 ```text
 search-web
 ```
 
-If the user wants web results saved as reusable local files:
+Use this when the user only wants fresh web results.
+
+## Save For Inspection
 
 ```text
 fetch-web
 ```
 
-If the user wants web results indexed in OpenViking right away:
+Use this when the user wants markdown files before indexing.
+
+## Save And Index
 
 ```text
 sync
 ```
 
-If the user already has markdown files locally:
+Use this when the user wants public web material available through OpenViking.
+
+## Existing Local Corpus
 
 ```text
 import-local -> search
 ```
 
-If the user wants a multi-question draft:
+Use this when the user already has markdown or text files.
+
+## Read From OpenViking
 
 ```text
-import-local or sync -> research
+search
 ```
 
-## Recommended Local Demo
+Use this when the user or their Agent already knows the `viking://` scope.
 
-Use the smallest repo-owned corpus first:
+## Important Point
 
-1. `.\scripts\smoke_test.ps1`
-2. `ar research examples\smoke_corpus\research_questions.yaml --output reports\smoke_corpus_research.md --top-k 3`
-
-This demo avoids live AnySearch dependency and keeps the validation loop short.
+`viking://` is a virtual OpenViking URI. An Agent needs a tool such as `ar search` or another OpenViking adapter to read it.

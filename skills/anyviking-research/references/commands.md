@@ -1,6 +1,6 @@
 # Command Recipes
 
-## Health and Readiness
+## Check Readiness
 
 ```powershell
 ar doctor
@@ -10,60 +10,38 @@ ar doctor
 ar health
 ```
 
-```powershell
-ar status
-```
-
-## Public Web Search
-
-Search only:
+## Search The Web
 
 ```powershell
 ar search-web "AI search tools" --max-results 5
 ```
 
-Search and save results locally:
+## Save Web Results
 
 ```powershell
 ar fetch-web "AI search tools" --max-results 5 --output data\web\ai-search-tools
 ```
 
-Search and import into OpenViking:
+## Save And Import Into OpenViking
 
 ```powershell
 ar sync "AI search tools" --max-results 5 --output data\web\ai-search-tools --to viking://resources/ai-search-tools
 ```
 
-## Local Corpus
-
-Import a local folder:
+## Import Existing Local Files
 
 ```powershell
-ar import-local .\examples\smoke_corpus --to viking://resources/smoke-corpus
+ar import-local .\path\to\corpus --to viking://resources/my-corpus
 ```
 
-Show the resource tree:
+## Inspect A Resource Tree
 
 ```powershell
-ar tree viking://resources/smoke-corpus -L 2
+ar tree viking://resources/my-corpus -L 2
 ```
 
-Search a known scope:
+## Search Indexed Data
 
 ```powershell
-ar search "What is the core purpose of the second phase?" --scope viking://resources/smoke-corpus --top-k 3 --format text --documents-only
-```
-
-## Research Drafts
-
-Generate markdown output:
-
-```powershell
-ar research examples\smoke_corpus\research_questions.yaml --output reports\smoke_corpus_research.md --top-k 3
-```
-
-Generate markdown plus JSON:
-
-```powershell
-ar research examples\smoke_corpus\research_questions.yaml --output reports\smoke_corpus_research.md --json-output reports\smoke_corpus_research.json --top-k 3
+ar search "What does this corpus say?" --scope viking://resources/my-corpus --top-k 5 --format text --documents-only
 ```

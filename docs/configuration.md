@@ -1,84 +1,60 @@
-﻿# Configuration
+# Configuration
 
-AnyViking Research uses two kinds of configuration:
+The repository only keeps example config files.
 
-- OpenViking server and CLI configuration files under `config/`.
-- Environment variables for optional upstream services such as AnySearch.
+Real config files stay local:
 
-## OpenViking Server Config
+```text
+config/ov.conf
+config/ovcli.conf
+.env
+```
 
-Copy the example file:
+## OpenViking
+
+Copy the templates:
 
 ```powershell
 Copy-Item config\ov.conf.example config\ov.conf
+Copy-Item config\ovcli.conf.example config\ovcli.conf
 ```
 
-Edit `config\ov.conf` and set your model provider credentials.
+Edit `config\ov.conf` and set your own model provider credentials.
 
 The important fields are:
 
 ```text
-server.host      local server host, usually 127.0.0.1
-server.port      local server port, usually 1933
-storage.workspace local OpenViking workspace directory
-embedding.*      embedding provider settings
-vlm.*            VLM/provider settings used by OpenViking
+server.host
+server.port
+storage.workspace
+embedding.*
+vlm.*
 ```
 
-`config\ov.conf` is ignored by git because it can contain API keys.
+`storage.workspace` is where OpenViking keeps its local database and indexes.
 
-## OpenViking CLI Config
+## AnySearch
 
-Copy the example file:
-
-```powershell
-Copy-Item config\ovcli.conf.example config\ovcli.conf
-```
-
-The default points at:
-
-```text
-http://127.0.0.1:1933
-```
-
-Most project commands use `ar`, which finds the OpenViking executable and calls it for import/tree/status operations.
-
-## AnySearch API Key
-
-AnySearch may allow anonymous requests, but for stable usage set:
+AnySearch may work without a key, but a key is better for stable use:
 
 ```powershell
 $env:ANYSEARCH_API_KEY = "your-key"
 ```
 
-The key is read by `AnySearchConnector`. It is not written to output files.
+The connector reads this value from the environment.
 
-## Local Runtime Directories
+## Local Output
 
-These paths are intentionally ignored by git:
+These folders are runtime output and are ignored by Git:
 
 ```text
-data/       web search output and manifests
-reports/    generated research reports
-workspace/  OpenViking local workspace
+data/
+reports/
+workspace/
 ```
 
-## Health Check
+`data/` stores fetched web material before import.
 
-Run:
+`workspace/` is OpenViking's local storage.
 
-```powershell
-ar doctor
-```
-
-Then start OpenViking if needed:
-
-```powershell
-.\scripts\start_openviking.ps1
-```
-
-Check service health:
-
-```powershell
-ar health
-```
+`reports/` is only for generated local output if a command writes there.

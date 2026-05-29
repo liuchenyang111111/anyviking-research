@@ -1,58 +1,50 @@
 # Troubleshooting
 
-## `OpenViking health check failed`
+## `ar` Is Not Found
 
-Meaning:
-
-- the OpenViking server is not running, or
-- the server is listening on a different host or port.
+The package may not be installed in the active environment.
 
 Try:
 
 ```powershell
-.\scripts\start_openviking.ps1
+.\.venv\Scripts\ar.exe doctor
 ```
 
-Then:
-
-```powershell
-ar health
-```
-
-## `ar.exe not found`
-
-Meaning:
-
-- the package is not installed in the active virtual environment.
-
-Try:
+Or reinstall:
 
 ```powershell
 python -m pip install -e .[openviking] --no-build-isolation
 ```
 
-## AnySearch request failed
-
-Meaning:
-
-- network access is unavailable, or
-- the request was rejected, or
-- an API key is needed for stable access.
+## OpenViking Is Not Running
 
 Try:
+
+```powershell
+.\scripts\start_openviking.ps1
+ar health
+```
+
+## AnySearch Request Failed
+
+Possible causes:
+
+- network access is blocked
+- the API rejected the request
+- an API key is needed for stable access
+
+Set a key if you have one:
 
 ```powershell
 $env:ANYSEARCH_API_KEY = "your-key"
 ```
 
-Then rerun `ar search-web` or `ar sync`.
+## Search Results Look Weak
 
-## Search returns no useful results
+Try:
 
-Try one or more of these:
-
-- widen `--scope`
-- increase `--top-k`
-- remove overly narrow filters
-- run `ar tree <scope>` to verify the corpus was imported
-- use `--documents-only` when generated summaries are noisy
+- increase `--max-results` for web search
+- increase `--top-k` for OpenViking search
+- remove narrow filters
+- check the imported scope with `ar tree`
+- use `--documents-only` to avoid generated summaries

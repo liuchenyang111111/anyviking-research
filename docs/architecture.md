@@ -1,98 +1,66 @@
 # Architecture
 
-AnyViking Research has three layers.
+AnyViking Research is intentionally small.
 
 ```text
 AnySearch
-  -> finds public web material
+  finds public web pages
 
 AnyViking Research
-  -> normalizes search results
-  -> writes raw JSON, markdown, and manifest files
-  -> calls OpenViking import/search commands
-  -> generates retrieval-based research drafts
+  saves normalized results as local markdown
+  imports those markdown files into OpenViking
+  searches a known viking:// scope
 
 OpenViking
-  -> stores local resources
-  -> builds semantic indexes
-  -> returns `viking://` retrieval results
+  stores resources in its workspace
+  builds indexes
+  returns viking:// retrieval results
 ```
 
-## Core Folders
+For upstream search behavior, read:
+
+- [AnySearch Skill](https://github.com/anysearch-ai/anysearch-skill)
+- [AnySearch docs](https://www.anysearch.com/docs)
+
+For storage, resource paths, and retrieval behavior, read:
+
+- [OpenViking](https://github.com/volcengine/OpenViking)
+- [OpenViking docs](https://docs.openviking.ai/)
+
+## Code Layout
 
 ```text
-src/anyviking_research/
-  Application package.
-
 src/anyviking_research/cli.py
-  Implements the `ar` command.
+  The `ar` command.
 
 src/anyviking_research/connectors/
-  Upstream public-web search connectors.
-
-src/anyviking_research/retrievers/
-  Downstream retrieval adapters.
+  Upstream search connectors. Today this means AnySearch.
 
 src/anyviking_research/workflows/
-  Multi-step workflows such as fetch and research.
+  Multi-step local workflows, such as writing web results to markdown.
 
-tests/
-  Unit tests for connector, workflow, CLI, retriever, and research logic.
-
-config/
-  OpenViking config examples. Real local configs are git-ignored.
-
-scripts/
-  Local helper scripts, especially startup and smoke testing.
-
-examples/smoke_corpus/
-  Minimal local demo corpus for import, search, and research.
-
-skills/anyviking-research/
-  Packaged skill instructions for agents that should drive the CLI.
-
-docs/
-  Core docs only: architecture, CLI reference, configuration, and development.
+src/anyviking_research/retrievers/
+  Downstream retrieval adapters. Today this means OpenViking.
 ```
 
-## Main Commands
-
-```powershell
-ar search-web "OpenViking GitHub" --max-results 3
-```
-
-Searches AnySearch and prints web results.
-
-```powershell
-ar fetch-web "OpenViking GitHub" --max-results 3 --output data\web\openviking-github
-```
-
-Searches AnySearch and saves raw JSON, markdown files, and a manifest.
+## Main Flow
 
 ```powershell
 ar sync "OpenViking GitHub" --max-results 3 --output data\web\openviking-github --to viking://resources/openviking-github
 ```
 
-Runs the full upstream-to-downstream import path.
+Then query the imported scope:
 
 ```powershell
 ar search "What is OpenViking?" --scope viking://resources/openviking-github --format text --documents-only
 ```
 
-Searches an indexed OpenViking corpus.
+## What This Project Does Not Hide
 
-```powershell
-ar research examples\smoke_corpus\research_questions.yaml --output reports\smoke_corpus_research.md
-```
+The project does not reimplement AnySearch or OpenViking.
 
-Generates a retrieval-based research draft.
+It keeps their jobs separate:
 
-## Why This Shape
-
-The project keeps AnySearch and OpenViking separate:
-
-- AnySearch is good at discovering fresh public web material.
-- OpenViking is good at storing local resources and retrieving them with stable `viking://` references.
-- AnyViking Research is the workflow layer between them.
-
-That makes the first usable version CLI-first and easy to debug. Skill packaging, MCP, bots, and Web UI can be added later as wrappers around the same tested workflow.
+- AnySearch discovers sources.
+- OpenViking stores and retrieves sources.
+- This project connects them with a simple CLI.

@@ -1,37 +1,37 @@
 ---
 name: anyviking-research
-description: Coordinate AnySearch public-web discovery with OpenViking local indexing and retrieval through the `ar` CLI. Use when Codex needs to search the web, save results as markdown, import local corpus files into OpenViking, search a known `viking://` scope, or generate a retrieval-backed research draft.
+description: Use the `ar` CLI to search public web sources with AnySearch, save them as markdown, import them into OpenViking, and search a known `viking://` scope. Use this when the user wants fresh web material made available to their own Agent through OpenViking retrieval.
 ---
 
 # AnyViking Research
 
-Use this skill when the task should run through the `ar` CLI instead of ad hoc shell commands.
+This Skill is a workflow guide for the `ar` CLI.
 
-## Prerequisites
-
-- Use a Python 3.12 environment where `ar` is installed.
-- Expect OpenViking to be available at `http://127.0.0.1:1933`.
-- Treat AnySearch as optional for search-only or sync workflows.
+It does not search or index by itself. The actual work is done by the installed `ar` command.
 
 ## Start Here
 
-1. Run `ar doctor` when environment state is unclear.
-2. If the user only wants public-web discovery, read `references/commands.md`.
-3. If the user wants to index or research, read `references/workflow.md`.
+1. If environment state is unclear, run `ar doctor`.
+2. If the user only wants web results, read `references/commands.md`.
+3. If the user wants data saved or imported, read `references/workflow.md`.
 4. If a command fails, read `references/troubleshooting.md`.
 
-## Working Rules
+## Choose The Command
 
-- Prefer `ar search-web` for search-only tasks.
-- Prefer `ar fetch-web` when results should be inspected before indexing.
-- Prefer `ar sync` when web results should go straight into OpenViking.
-- Prefer `ar import-local` when the corpus already exists on disk.
-- Prefer `ar search` for one question against a known scope.
-- Prefer `ar research` for multi-question retrieval drafts.
-- Prefer `--documents-only` when citations should point to source documents instead of generated summaries.
-- Keep runtime output in `data/`, `reports/`, or `workspace/`; do not treat those as source files.
-- Do not commit `.env`, `config/ov.conf`, or `config/ovcli.conf`.
+- Use `ar search-web` to search only.
+- Use `ar fetch-web` to save web results as local files.
+- Use `ar sync` to save web results and import them into OpenViking.
+- Use `ar import-local` when the user already has local markdown files.
+- Use `ar search` when the user has a known `viking://` scope.
 
-## Local Demo
+## Rules
 
-For the smallest reproducible demo, use `examples/smoke_corpus` and `.\scripts\smoke_test.ps1`.
+- Keep generated files under `data/`, `reports/`, or `workspace/`.
+- Do not commit `.env`, `config/ov.conf`, `config/ovcli.conf`, `data/`, `reports/`, or `workspace/`.
+- Prefer `--documents-only` when the user wants source documents instead of OpenViking-generated summaries.
+- If `ar` is not on PATH, try `.\.venv\Scripts\ar.exe`.
+
+## Upstream References
+
+- AnySearch: https://github.com/anysearch-ai/anysearch-skill
+- OpenViking: https://github.com/volcengine/OpenViking

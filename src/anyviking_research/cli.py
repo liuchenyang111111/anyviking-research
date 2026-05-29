@@ -19,12 +19,6 @@ from anyviking_research.workflows.fetch_web import (
     default_output_dir,
     write_web_search_output,
 )
-from anyviking_research.workflows.research import (
-    ResearchReport,
-    report_to_jsonable,
-    run_research,
-    write_markdown_report,
-)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -32,7 +26,7 @@ def build_parser() -> argparse.ArgumentParser:
         prog="ar",
         description=(
             "AnySearch upstream web discovery plus OpenViking downstream "
-            "indexing, retrieval, and research drafts."
+            "indexing and retrieval."
         ),
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -157,64 +151,6 @@ def build_parser() -> argparse.ArgumentParser:
         "--documents-only",
         action="store_true",
         help="Return original documents only; filter .abstract.md / .overview.md.",
-    )
-
-    research = subparsers.add_parser("research", help="Generate a retrieval-based research draft from YAML questions")
-    research.add_argument("config", help="Research question YAML path")
-    research.add_argument(
-        "--output",
-        default="reports/research_draft.md",
-        help="Output markdown file path",
-    )
-    research.add_argument("--top-k", type=int, default=5)
-    research.add_argument(
-        "--fetch-k",
-        type=int,
-        default=None,
-        help="Candidate results to fetch per question before filtering.",
-    )
-    research.add_argument(
-        "--dedupe",
-        choices=("section", "none"),
-        default="section",
-        help="Dedupe strategy. section keeps each URI once per section; none keeps raw results.",
-    )
-    research.add_argument(
-        "--no-citation-stats",
-        action="store_true",
-        help="Do not include citation statistics in the report or JSON.",
-    )
-    research.add_argument(
-        "--min-results-per-section",
-        type=int,
-        default=1,
-        help="Minimum expected result count per section before adding quality notes.",
-    )
-    research.add_argument(
-        "--url",
-        default="http://127.0.0.1:1933",
-        help="OpenViking server URL",
-    )
-    research.add_argument("--timeout", type=float, default=60.0)
-    research.add_argument(
-        "--include-summaries",
-        action="store_true",
-        help="Include OpenViking-generated .abstract.md / .overview.md files.",
-    )
-    research.add_argument(
-        "--keep-unhelpful",
-        action="store_true",
-        help="Keep clearly unhelpful retrieval results.",
-    )
-    research.add_argument(
-        "--json",
-        action="store_true",
-        help="Also print the JSON summary to the terminal.",
-    )
-    research.add_argument(
-        "--json-output",
-        default=None,
-        help="Optional JSON output file path for scripts or agents.",
     )
 
     return parser
@@ -371,34 +307,6 @@ def main(argv: list[str] | None = None) -> int:
                     indent=2,
                 )
             )
-        return 0
-
-    if args.command == "research":
-        try:
-            report = run_research(
-                args.config,
-                base_url=args.url,
-                top_k=args.top_k,
-                fetch_k=args.fetch_k,
-                dedupe=args.dedupe,
-                include_citation_stats=not args.no_citation_stats,
-                min_results_per_section=args.min_results_per_section,
-                documents_only=not args.include_summaries,
-                filter_unhelpful=not args.keep_unhelpful,
-                timeout=args.timeout,
-            )
-            output_path = write_markdown_report(report, args.output)
-            json_output_path = _write_json_report(report, args.json_output) if args.json_output else None
-        except (OSError, RuntimeError, ValueError) as exc:
-            print(str(exc), file=sys.stderr)
-            return 2
-
-        if args.json:
-            print(json.dumps(report_to_jsonable(report), ensure_ascii=False, indent=2))
-        else:
-            print(f"Generated retrieval research draft: {output_path}")
-            if json_output_path is not None:
-                print(f"Generated JSON retrieval results: {json_output_path}")
         return 0
 
     parser.error(f"Unknown command: {args.command}")
@@ -660,16 +568,6 @@ def _print_text_results(query: str, scope: str | None, results: list[SearchResul
 def _is_generated_summary(uri: str) -> bool:
     tail = uri.rstrip("/").rsplit("/", 1)[-1].lower()
     return tail in {".abstract.md", ".overview.md"}
-
-
-def _write_json_report(report: ResearchReport, output_path: str | Path) -> Path:
-    path = Path(output_path)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        json.dumps(report_to_jsonable(report), ensure_ascii=False, indent=2),
-        encoding="utf-8",
-    )
-    return path
 
 
 if __name__ == "__main__":

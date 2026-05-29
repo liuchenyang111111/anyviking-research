@@ -11,8 +11,9 @@ dist/
 .env.*
 !.env.example
 reports/*
-!reports/.gitkeep
 data/
 workspace/
 config/ov.conf
 config/ovcli.conf
+CHANGELOG.md
+ROADMAP.md
