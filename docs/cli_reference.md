@@ -109,7 +109,7 @@ Text output is easier to read. `--documents-only` filters generated `.abstract.m
 ## Research Drafts
 
 ```powershell
-ar research questions.yaml --output reports\draft.md
+ar research examples\smoke_corpus\research_questions.yaml --output reports\smoke_corpus_research.md
 ```
 
 The YAML file should include:

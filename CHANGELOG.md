@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Trimmed `docs/` to core architecture, CLI reference, configuration, and development guides.
+- Reduced `examples/` to one minimal smoke corpus.
+- Renamed the repo-local root `SKILL.md` to `AGENT_NOTES.md`.
+- Added the formal packaged skill under `skills/anyviking-research/`.
+- Updated package manifest entries for the leaner repository structure.
+
 ## 0.6.0
 
 - Reframed the repository as a CLI-first open-source research toolkit rather than a small demo.

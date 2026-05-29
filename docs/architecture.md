@@ -1,4 +1,4 @@
-﻿# Architecture
+# Architecture
 
 AnyViking Research has three layers.
 
@@ -18,7 +18,7 @@ OpenViking
   -> returns `viking://` retrieval results
 ```
 
-## Folder Roles
+## Core Folders
 
 ```text
 src/anyviking_research/
@@ -29,41 +29,30 @@ src/anyviking_research/cli.py
 
 src/anyviking_research/connectors/
   Upstream public-web search connectors.
-  `anysearch.py` talks to AnySearch and converts API responses into normalized Python objects.
 
 src/anyviking_research/retrievers/
   Downstream retrieval adapters.
-  `openviking.py` calls OpenViking HTTP search endpoints and converts responses into SearchResult objects.
 
 src/anyviking_research/workflows/
-  Multi-step workflows.
-  `fetch_web.py` writes AnySearch results to local files.
-  `research.py` reads YAML questions and creates markdown/JSON research drafts.
+  Multi-step workflows such as fetch and research.
 
 tests/
   Unit tests for connector, workflow, CLI, retriever, and research logic.
 
 config/
-  OpenViking server and CLI config examples.
-  Real local configs are git-ignored.
+  OpenViking config examples. Real local configs are git-ignored.
 
 scripts/
-  PowerShell helper scripts, especially OpenViking startup and smoke testing.
+  Local helper scripts, especially startup and smoke testing.
 
-examples/
-  Demo corpora and demo scripts.
+examples/smoke_corpus/
+  Minimal local demo corpus for import, search, and research.
+
+skills/anyviking-research/
+  Packaged skill instructions for agents that should drive the CLI.
 
 docs/
-  Learning notes, architecture notes, FAQ, installation notes, and run records.
-
-data/
-  Runtime web-search output. Ignored by git.
-
-reports/
-  Runtime research reports. Ignored by git.
-
-workspace/
-  OpenViking runtime workspace. Ignored by git.
+  Core docs only: architecture, CLI reference, configuration, and development.
 ```
 
 ## Main Commands
@@ -90,10 +79,10 @@ Runs the full upstream-to-downstream import path.
 ar search "What is OpenViking?" --scope viking://resources/openviking-github --format text --documents-only
 ```
 
-Searches the indexed OpenViking corpus.
+Searches an indexed OpenViking corpus.
 
 ```powershell
-ar research questions.yaml --output reports\draft.md
+ar research examples\smoke_corpus\research_questions.yaml --output reports\smoke_corpus_research.md
 ```
 
 Generates a retrieval-based research draft.
@@ -102,8 +91,8 @@ Generates a retrieval-based research draft.
 
 The project keeps AnySearch and OpenViking separate:
 
-- AnySearch is good at discovering public web material.
+- AnySearch is good at discovering fresh public web material.
 - OpenViking is good at storing local resources and retrieving them with stable `viking://` references.
 - AnyViking Research is the workflow layer between them.
 
-This keeps the first usable version CLI-first and easy to debug. MCP, skill packaging, OpenVikingBot, and Web UI can be added later as wrappers around the same tested workflow.
+That makes the first usable version CLI-first and easy to debug. Skill packaging, MCP, bots, and Web UI can be added later as wrappers around the same tested workflow.

@@ -1,4 +1,4 @@
-﻿# Development Guide
+# Development Guide
 
 This guide is for contributors working on the codebase.
 
@@ -41,7 +41,7 @@ python -m compileall -q src tests
 ar doctor
 ```
 
-## Live Smoke Tests
+## Smoke Checks
 
 Start OpenViking:
 
@@ -49,16 +49,16 @@ Start OpenViking:
 .\scripts\start_openviking.ps1
 ```
 
-Run the local smoke corpus:
+Run the minimal local demo:
 
 ```powershell
 .\scripts\smoke_test.ps1
 ```
 
-Run the synthetic corpus research workflow:
+Run a small research draft on the same corpus:
 
 ```powershell
-.\examples\synthetic_ai_news\run_research.ps1
+ar research examples\smoke_corpus\research_questions.yaml --output reports\smoke_corpus_research.md --top-k 3
 ```
 
 Run a low-volume live AnySearch sync:
@@ -67,13 +67,18 @@ Run a low-volume live AnySearch sync:
 ar sync "OpenViking GitHub" --max-results 2 --output data\web\openviking-github --to viking://resources/openviking-github
 ```
 
+## Skill Package
+
+The repo includes a packaged skill under `skills/anyviking-research/`.
+Keep the skill concise and move detailed command recipes or troubleshooting notes into `references/`.
+
 ## Release Checklist
 
 1. Update `CHANGELOG.md`.
-2. Update `README.md` and `docs/cli_reference.md` for new commands.
+2. Update `README.md` and `docs/cli_reference.md` for command or workflow changes.
 3. Run unit tests and compile checks.
 4. Run `ar doctor`.
-5. Run one local OpenViking smoke test.
+5. Run the smoke corpus demo.
 6. Build the package:
 
 ```powershell

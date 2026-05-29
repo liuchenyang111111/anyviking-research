@@ -15,7 +15,7 @@ Set-Location $ProjectRoot
 $Cli = Join-Path $ProjectRoot ".venv\Scripts\ar.exe"
 
 if (-not (Test-Path $Cli)) {
-    throw "ar.exe not found: $Cli. Run: .\.venv\Scripts\python.exe -m pip install -e . --no-deps --no-build-isolation"
+    throw "ar.exe not found: $Cli. Run: .\.venv\Scripts\python.exe -m pip install -e .[openviking] --no-build-isolation"
 }
 
 function Invoke-Step {

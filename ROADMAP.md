@@ -22,8 +22,7 @@ AnyViking Research connects AnySearch upstream discovery with OpenViking downstr
 ### v0.3 Demo corpus
 
 - Small smoke corpus.
-- Synthetic AI news corpus that is safe to keep in the repository.
-- Demo scripts for search and research generation.
+- Minimal search and research demo flow.
 
 ### v0.4 AnySearch upstream connector
 
@@ -45,26 +44,33 @@ Verified locally on 2026-05-28:
 - `ar research` generated `reports\openviking_github_sync_research.md` and JSON output.
 - Unit tests passed.
 
+### v0.6 Repository and skill packaging
+
+- Trimmed the repository to core source, tests, docs, scripts, config, and one minimal smoke demo.
+- Moved process notes to `AGENT_NOTES.md`.
+- Added a formal packaged skill under `skills/anyviking-research/`.
+- Added skill references for commands, workflow selection, and troubleshooting.
+
 ## Next
 
-### v0.6 Better research ergonomics
+### v0.7 Better research ergonomics
 
 - Add topic presets for common research tasks.
 - Add clearer progress output during long OpenViking imports.
 - Add a command to create a starter YAML question file for a synced topic.
 
-### v0.7 Optional LLM synthesis
+### v0.8 Optional LLM synthesis
 
 - Add an optional summarization step that turns retrieved evidence into a stronger narrative draft.
 - Keep citations grounded in `viking://` URIs.
 - Make the LLM provider optional so search/indexing still works without it.
 
-### v0.8 MCP / OpenVikingBot adapters
+### v0.9 MCP / OpenVikingBot adapters
 
 - Wrap the stable CLI workflow as an MCP tool if agents need direct tool calls.
 - Consider OpenVikingBot integration after the CLI workflow remains stable.
 
-### v0.9 Web UI, only if needed
+### v1.0 Web UI, only if needed
 
 - A small UI could show search, saved corpus, indexed resources, and generated reports.
 - It is not required for the current CLI-first project.

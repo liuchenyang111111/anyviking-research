@@ -1,53 +1,39 @@
-# 项目上下文
+# Project Context
 
-这份文档是给项目负责人和 AI/Codex 看的项目记忆入口。它记录这个新项目为什么要做、旧项目已经验证了什么，以及新项目准备如何继续。
+This file is a short memory entry for the repository owner and AI helpers.
 
-## 项目来源
+## Goal
 
-旧项目路径：
-
-```text
-D:\Github\OpenViking_Run
-```
-
-旧项目已经验证过一条链路：
+Build a reusable CLI workflow that treats:
 
 ```text
-新闻/RSS 资料
-  -> 抓取正文并保存为 markdown
-  -> 导入 OpenViking
-  -> 通过 OpenViking 语义检索
-  -> 让 AI 基于检索结果写回答或报告
+AnySearch as the upstream discovery layer
+OpenViking as the downstream indexing and retrieval layer
+AnyViking Research as the workflow layer between them
 ```
 
-## 新项目目标
+## Current Shape
 
-新项目路径：
+Repository path:
 
 ```text
 D:\Github\anyviking-research
 ```
 
-这个项目不再只做一个固定新闻主题，而是先整理成一个可复用的 OpenViking 本地语料检索 Skill。第二阶段重点是把环境、配置、最小语料导入、检索命令、项目 CLI 和轻量调研 workflow 跑清楚。第三阶段补充一套项目自写的合成 AI 新闻语料，让开源用户 clone 后也能完整复现 demo。
+Current focus:
 
-## 当前阶段边界
+- Python package and `ar` CLI
+- OpenViking health, import, tree, and search operations
+- AnySearch upstream discovery
+- Local markdown materialization and sync into OpenViking
+- Retrieval-backed research drafts
+- One minimal local demo corpus under `examples/smoke_corpus`
+- One packaged agent skill under `skills/anyviking-research`
 
-第二阶段先做：
+Not in scope yet:
 
-- Python 3.12 虚拟环境。
-- OpenViking 0.3.17。
-- 本项目专用配置说明。
-- 小型 markdown 测试语料。
-- `ov find` 检索验证。
-- `anyviking_research` 最小 Python/CLI 包装。
-- 旧项目新闻语料 demo。
-- `ar research` 检索型调研草稿。
-- 合成 AI 新闻语料 demo：`examples/synthetic_ai_news`。
-
-暂时不做：
-
-- VikingBot。
-- LLM 自动写完整报告。
-- AnySearch。
-- Web UI。
-- 大型仓库导入。
+- Web UI
+- hosted service
+- MCP server
+- autonomous planner
+- full LLM-written final reports

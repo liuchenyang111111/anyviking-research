@@ -1,4 +1,4 @@
-﻿# AnyViking Research
+# AnyViking Research
 
 AnyViking Research is a CLI-first open-source research toolkit that connects public-web discovery with local semantic indexing.
 
@@ -8,16 +8,7 @@ AnyViking Research -> normalize, materialize, import, search, and draft
 OpenViking -> index local resources and return `viking://` citations
 ```
 
-The project is designed for reproducible research workflows: collect sources, store them as local corpus files, index them with OpenViking, search them with stable resource URIs, and generate retrieval-backed research drafts.
-
-## Why This Project Exists
-
-Search and research workflows often split into two disconnected parts:
-
-- public web search for fresh material;
-- local indexing for reusable evidence, citations, and repeated analysis.
-
-AnyViking Research is the workflow layer between them. It keeps AnySearch and OpenViking separate, but gives users one practical CLI for the full path.
+The project is the workflow layer between fresh web search and reusable local retrieval. It helps you collect sources, save them as local corpus files, index them with OpenViking, search them with stable resource URIs, and generate retrieval-backed research drafts.
 
 ## Current Capabilities
 
@@ -32,12 +23,12 @@ AnyViking Research is the workflow layer between them. It keeps AnySearch and Op
 | Resource inspection | `ar tree` | implemented |
 | Semantic retrieval | `ar search` | JSON/text output |
 | Research drafts | `ar research` | markdown and optional JSON |
-| Reproducible examples | `examples/` | smoke and synthetic corpora |
-| Tests and CI | `tests/`, GitHub Actions | unit tests without live services |
+| Minimal local demo | `examples/smoke_corpus` | implemented |
+| Tests and CI | `tests/`, GitHub Actions | implemented |
 
 ## Project Maturity
 
-This is an alpha-stage open-source toolkit. The core CLI workflow is implemented and tested. Live local verification has successfully run:
+This is an alpha-stage toolkit. The core CLI workflow is implemented and tested:
 
 ```text
 AnySearch live query
@@ -47,7 +38,7 @@ AnySearch live query
 -> retrieval-backed research draft
 ```
 
-The project is not yet a hosted service, Web UI, autonomous planner, or full report-writing product. Those are future wrappers around the CLI foundation.
+It is not yet a Web UI, hosted service, MCP server, or autonomous research product. Those can be added later on top of the CLI foundation.
 
 ## Install
 
@@ -80,8 +71,6 @@ python -m pip install -e .[dev,openviking] --no-build-isolation
 ```
 
 ## Configure
-
-Copy local config examples:
 
 ```powershell
 Copy-Item config\ov.conf.example config\ov.conf
@@ -117,7 +106,7 @@ ar health
 
 ## Quick Workflow
 
-Search public web results:
+Search the public web:
 
 ```powershell
 ar search-web "OpenViking GitHub" --max-results 3
@@ -129,19 +118,13 @@ Save web results as a local corpus:
 ar fetch-web "OpenViking GitHub" --max-results 3 --output data\web\openviking-github
 ```
 
-Import saved corpus into OpenViking:
-
-```powershell
-ar import-local data\web\openviking-github\markdown --to viking://resources/openviking-github
-```
-
-Or run the full sync in one command:
+Search the web and import it into OpenViking:
 
 ```powershell
 ar sync "OpenViking GitHub" --max-results 3 --output data\web\openviking-github --to viking://resources/openviking-github
 ```
 
-Search the indexed corpus:
+Search an indexed corpus:
 
 ```powershell
 ar search "What is OpenViking?" --scope viking://resources/openviking-github --top-k 3 --format text --documents-only
@@ -150,26 +133,42 @@ ar search "What is OpenViking?" --scope viking://resources/openviking-github --t
 Generate a research draft:
 
 ```powershell
-ar research examples\synthetic_ai_news\research_questions.yaml --output reports\synthetic_ai_news_research_draft.md
+ar research examples\smoke_corpus\research_questions.yaml --output reports\smoke_corpus_research.md
 ```
 
-## Reproducible Demo
+## Minimal Demo
 
-The recommended demo uses project-owned synthetic markdown files:
-
-```powershell
-.\examples\synthetic_ai_news\run_demo.ps1
-```
-
-```powershell
-.\examples\synthetic_ai_news\run_research.ps1
-```
-
-For a smaller smoke test:
+Run the local smoke test:
 
 ```powershell
 .\scripts\smoke_test.ps1
 ```
+
+Run a small research draft on the same demo corpus:
+
+```powershell
+ar research examples\smoke_corpus\research_questions.yaml --output reports\smoke_corpus_research.md --top-k 3
+```
+
+## Packaged Skill
+
+The formal agent skill is packaged under:
+
+```text
+skills/anyviking-research/
+```
+
+Use this folder when installing or sharing the skill. It contains:
+
+```text
+SKILL.md
+agents/openai.yaml
+references/commands.md
+references/workflow.md
+references/troubleshooting.md
+```
+
+The repository root also has `AGENT_NOTES.md` for maintainers and local AI helpers. It is not the formal skill entry point.
 
 ## Documentation
 
@@ -177,9 +176,6 @@ For a smaller smoke test:
 - [CLI reference](docs/cli_reference.md)
 - [Configuration](docs/configuration.md)
 - [Development guide](docs/development.md)
-- [Open-source readiness](docs/open_source_readiness.md)
-- [Research workflow](docs/research_workflow.md)
-- [FAQ](docs/faq.md)
 - [Roadmap](ROADMAP.md)
 - [Changelog](CHANGELOG.md)
 - [Contributing](CONTRIBUTING.md)
@@ -197,8 +193,9 @@ src/anyviking_research/
 tests/                    unit tests without live service requirements
 config/                   example OpenViking config files
 scripts/                  local helper scripts
-examples/                 reproducible corpora and demos
-docs/                     user and developer documentation
+examples/smoke_corpus/    minimal reproducible demo corpus
+skills/anyviking-research/ packaged agent skill
+docs/                     core user and developer documentation
 ```
 
 Runtime output is ignored by git:
