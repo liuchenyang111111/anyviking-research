@@ -18,6 +18,12 @@ If your virtual environment is not active, use:
 anyviking doctor
 ```
 
+Set a default OpenViking HTTP endpoint through the environment if you do not want to repeat `--url`:
+
+```bash
+export OPENVIKING_URL="http://127.0.0.1:1933"
+```
+
 Use JSON output when another tool or Agent needs to parse the result:
 
 ```bash
@@ -54,6 +60,12 @@ anyviking tree viking://resources/my-corpus -L 2
 
 ```bash
 anyviking search-web "query" --max-results 5
+```
+
+Set a default AnySearch-compatible endpoint through the environment if needed:
+
+```bash
+export ANYSEARCH_API_URL="https://your-endpoint.example"
 ```
 
 Useful filters:

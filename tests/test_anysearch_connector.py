@@ -1,5 +1,6 @@
 import json
 import unittest
+from unittest.mock import patch
 
 import httpx
 
@@ -105,6 +106,28 @@ class AnySearchConnectorTests(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, "between 1 and 100"):
             connector.search("demo", max_results=0)
+
+    def test_connector_reads_base_url_and_key_from_environment(self) -> None:
+        seen: dict[str, object] = {}
+
+        def handler(request: httpx.Request) -> httpx.Response:
+            seen["url"] = str(request.url)
+            seen["authorization"] = request.headers.get("authorization")
+            return httpx.Response(200, json={"results": []})
+
+        with patch.dict(
+            "os.environ",
+            {
+                "ANYSEARCH_API_URL": "https://env.anysearch.test",
+                "ANYSEARCH_API_KEY": "env-key",
+            },
+            clear=False,
+        ):
+            connector = AnySearchConnector(transport=httpx.MockTransport(handler))
+            connector.search("demo query", max_results=1)
+
+        self.assertEqual(seen["url"], "https://env.anysearch.test/v1/search")
+        self.assertEqual(seen["authorization"], "Bearer env-key")
 
 
 if __name__ == "__main__":

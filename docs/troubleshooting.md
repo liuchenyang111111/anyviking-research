@@ -93,6 +93,7 @@ Common causes:
 - Network access is blocked.
 - Anonymous AnySearch requests are rate-limited.
 - `ANYSEARCH_API_KEY` is missing or invalid.
+- `ANYSEARCH_API_URL` points to the wrong endpoint.
 - Filters such as `--domain`, `--language`, or `--freshness` are too narrow.
 
 Set a key if you have one:
@@ -110,6 +111,8 @@ Then test with a small request:
 ```bash
 anyviking search-web "OpenViking GitHub" --max-results 3
 ```
+
+If you use a custom AnySearch endpoint, verify that `ANYSEARCH_API_URL` is correct.
 
 ## Import Succeeded But Search Finds Nothing
 

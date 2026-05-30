@@ -41,7 +41,33 @@ AnySearch may work without a key, but a key is better for stable use:
 $env:ANYSEARCH_API_KEY = "your-key"
 ```
 
+```bash
+export ANYSEARCH_API_KEY="your-key"
+```
+
 The connector reads this value from the environment.
+
+You can also override the default AnySearch endpoint:
+
+```powershell
+$env:ANYSEARCH_API_URL = "https://your-endpoint.example"
+```
+
+```bash
+export ANYSEARCH_API_URL="https://your-endpoint.example"
+```
+
+## CLI Service Defaults
+
+Commands that talk to the OpenViking HTTP service directly, such as `anyviking doctor`, `anyviking health`, and `anyviking search`, read `OPENVIKING_URL` when `--url` is not passed:
+
+```powershell
+$env:OPENVIKING_URL = "http://127.0.0.1:1933"
+```
+
+```bash
+export OPENVIKING_URL="http://127.0.0.1:1933"
+```
 
 ## Local Output
 

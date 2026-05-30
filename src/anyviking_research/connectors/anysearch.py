@@ -14,12 +14,16 @@ class AnySearchConnector:
     def __init__(
         self,
         *,
-        base_url: str = "https://api.anysearch.com",
+        base_url: str | None = None,
         api_key: str | None = None,
         timeout: float = 30.0,
         transport: httpx.BaseTransport | None = None,
     ) -> None:
-        self.base_url = base_url.rstrip("/")
+        self.base_url = (
+            base_url
+            or os.environ.get("ANYSEARCH_API_URL")
+            or "https://api.anysearch.com"
+        ).rstrip("/")
         self.api_key = api_key if api_key is not None else os.environ.get("ANYSEARCH_API_KEY")
         self.timeout = timeout
         self.transport = transport

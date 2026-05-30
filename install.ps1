@@ -18,6 +18,16 @@ if (Get-Command py -ErrorAction SilentlyContinue) {
     throw "Python 3.12 was not found. Install Python 3.12 first."
 }
 
+try {
+    $PythonVersion = (& $PythonExe @PythonArgs -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')").Trim()
+} catch {
+    throw "Python 3.12 was not found. Install Python 3.12 first."
+}
+
+if ($PythonVersion -ne "3.12") {
+    throw "Python 3.12 is required, but the detected interpreter is $PythonVersion."
+}
+
 Write-Output "Creating virtual environment: .venv"
 & $PythonExe @PythonArgs -m venv .venv
 

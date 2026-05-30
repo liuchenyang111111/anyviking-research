@@ -11,8 +11,11 @@ from anyviking_research.connectors.base import WebSearchResponse, WebSearchResul
 
 
 class FakeAnySearchConnector:
+    last_init_kwargs: dict[str, object] | None = None
+
     def __init__(self, **kwargs) -> None:
         self.kwargs = kwargs
+        type(self).last_init_kwargs = kwargs
 
     def search(self, query: str, **kwargs) -> WebSearchResponse:
         return WebSearchResponse(
@@ -60,6 +63,21 @@ class WebCliTests(unittest.TestCase):
 
         self.assertEqual(exit_code, 2)
 
+    def test_doctor_uses_openviking_url_from_environment(self) -> None:
+        seen: dict[str, object] = {}
+
+        def fake_run_doctor(url: str, timeout: float):
+            seen["url"] = url
+            return [{"name": "python", "ok": True, "required": True, "detail": "3.12"}]
+
+        with patch.dict("os.environ", {"OPENVIKING_URL": "http://env-openviking:1933"}, clear=False):
+            with patch("anyviking_research.cli._run_doctor", fake_run_doctor):
+                with redirect_stdout(StringIO()):
+                    exit_code = main(["doctor"])
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(seen["url"], "http://env-openviking:1933")
+
     def test_fetch_web_writes_output(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             with patch("anyviking_research.cli.AnySearchConnector", FakeAnySearchConnector):
@@ -79,6 +97,21 @@ class WebCliTests(unittest.TestCase):
             self.assertTrue((Path(temp_dir) / "raw" / "anysearch_response.json").exists())
             self.assertTrue((Path(temp_dir) / "manifest.json").exists())
             self.assertEqual(len(list((Path(temp_dir) / "markdown").glob("*.md"))), 1)
+
+    def test_search_web_uses_anysearch_url_from_environment(self) -> None:
+        FakeAnySearchConnector.last_init_kwargs = None
+
+        with patch.dict("os.environ", {"ANYSEARCH_API_URL": "https://env.anysearch.test"}, clear=False):
+            with patch("anyviking_research.cli.AnySearchConnector", FakeAnySearchConnector):
+                with redirect_stdout(StringIO()):
+                    exit_code = main(["search-web", "demo query", "--format", "json"])
+
+        self.assertEqual(exit_code, 0)
+        self.assertIsNotNone(FakeAnySearchConnector.last_init_kwargs)
+        self.assertEqual(
+            FakeAnySearchConnector.last_init_kwargs["base_url"],
+            "https://env.anysearch.test",
+        )
 
     def test_sync_imports_markdown_directory(self) -> None:
         commands: list[list[str]] = []

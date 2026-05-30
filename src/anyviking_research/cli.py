@@ -20,6 +20,9 @@ from anyviking_research.workflows.fetch_web import (
     write_web_search_output,
 )
 
+DEFAULT_OPENVIKING_URL = "http://127.0.0.1:1933"
+DEFAULT_ANYSEARCH_URL = "https://api.anysearch.com"
+
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -34,7 +37,7 @@ def build_parser() -> argparse.ArgumentParser:
     doctor = subparsers.add_parser("doctor", help="Check local installation and runtime readiness")
     doctor.add_argument(
         "--url",
-        default="http://127.0.0.1:1933",
+        default=_default_openviking_url(),
         help="OpenViking server URL",
     )
     doctor.add_argument("--timeout", type=float, default=5.0)
@@ -47,7 +50,7 @@ def build_parser() -> argparse.ArgumentParser:
     health = subparsers.add_parser("health", help="Check the OpenViking server health")
     health.add_argument(
         "--url",
-        default="http://127.0.0.1:1933",
+        default=_default_openviking_url(),
         help="OpenViking server URL",
     )
     health.add_argument("--timeout", type=float, default=10.0)
@@ -131,7 +134,7 @@ def build_parser() -> argparse.ArgumentParser:
     search.add_argument("--top-k", type=int, default=5)
     search.add_argument(
         "--url",
-        default="http://127.0.0.1:1933",
+        default=_default_openviking_url(),
         help="OpenViking server URL",
     )
     search.add_argument("--timeout", type=float, default=60.0)
@@ -444,7 +447,7 @@ def _add_anysearch_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--max-results", type=int, default=10, help="Maximum result count")
     parser.add_argument(
         "--anysearch-url",
-        default="https://api.anysearch.com",
+        default=_default_anysearch_url(),
         help="AnySearch API URL",
     )
     parser.add_argument("--timeout", type=float, default=30.0)
@@ -501,6 +504,14 @@ def _run_anysearch(args: argparse.Namespace):
         from_time=args.from_time,
         to_time=args.to_time,
     )
+
+
+def _default_openviking_url() -> str:
+    return os.environ.get("OPENVIKING_URL", DEFAULT_OPENVIKING_URL)
+
+
+def _default_anysearch_url() -> str:
+    return os.environ.get("ANYSEARCH_API_URL", DEFAULT_ANYSEARCH_URL)
 
 
 def _web_response_to_jsonable(response) -> dict[str, object]:
