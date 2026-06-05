@@ -1,0 +1,36 @@
+id: ai_coding_agents
+title: AI coding agents trend tracking
+question: 未来 3 到 6 个月，AI 编程 Agent 是否会从代码补全转向更完整的软件工程自动化？
+horizon: 3-6 months
+
+queries:
+  - AI coding agents latest developments
+  - autonomous software engineering agents
+  - Cursor Claude Code Codex Devin latest updates
+  - open source coding agents software engineering
+
+search:
+  max_results: 6
+  freshness: month
+  language: en
+  content_types:
+    - web
+    - news
+
+storage:
+  output_dir: data/cases/ai_coding_agents
+  target_uri: viking://resources/forecast/ai-coding-agents
+
+retrieval_checks:
+  - query: 最近 AI 编程 Agent 有哪些产品或能力更新？
+    top_k: 3
+  - query: 有哪些证据说明它们正在从代码补全走向任务级自动化？
+    top_k: 3
+  - query: 有哪些限制或失败案例说明这个趋势还不成熟？
+    top_k: 3
+
+tags:
+  - technology
+  - ai-agents
+  - software-engineering
+  - forecast-data

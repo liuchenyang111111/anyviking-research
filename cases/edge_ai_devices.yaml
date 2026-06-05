@@ -1,0 +1,36 @@
+id: edge_ai_devices
+title: Edge AI device trend tracking
+question: 未来 6 个月，端侧 AI 是否会成为消费电子产品的主要卖点？
+horizon: 6 months
+
+queries:
+  - edge AI devices latest developments
+  - AI PC AI phone NPU latest products
+  - on-device AI model consumer electronics
+  - Apple Qualcomm Intel AMD Microsoft edge AI updates
+
+search:
+  max_results: 6
+  freshness: month
+  language: en
+  content_types:
+    - web
+    - news
+
+storage:
+  output_dir: data/cases/edge_ai_devices
+  target_uri: viking://resources/forecast/edge-ai-devices
+
+retrieval_checks:
+  - query: 最近端侧 AI、AI PC 或 AI 手机有哪些产品动态？
+    top_k: 3
+  - query: 哪些公司正在把端侧 AI 作为主要卖点？
+    top_k: 3
+  - query: 哪些证据说明端侧 AI 还只是营销概念？
+    top_k: 3
+
+tags:
+  - technology
+  - edge-ai
+  - consumer-electronics
+  - forecast-data
