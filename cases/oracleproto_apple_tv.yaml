@@ -1,0 +1,49 @@
+id: oracleproto_apple_tv
+title: OracleProto case: Apple TV product release
+question: Will Apple release a new version of the Apple TV by March 31, 2026?
+
+source:
+  name: OracleProto
+  url: https://huggingface.co/datasets/MaYiding/OracleProto
+  original_id: 69a2e39e5692ef005cdbf298
+
+forecast:
+  choice_type: single
+  question_type: yes_no
+  event: Will Apple release a new version of the Apple TV by March 31, 2026?
+  options:
+    - Yes
+    - No
+  end_time: 2026-03-31
+
+queries:
+  - Apple TV new version March 2026 release
+  - Apple TV hardware update 2026 rumors
+  - Apple TV 2026 product launch
+  - Apple TV new model release March 31 2026
+
+search:
+  max_results: 6
+  freshness: month
+  language: en
+  content_types:
+    - web
+    - news
+
+storage:
+  output_dir: data/cases/oracleproto_apple_tv
+  target_uri: viking://resources/forecast/oracleproto/apple-tv
+
+retrieval_checks:
+  - query: What evidence suggests Apple may release a new Apple TV by March 31, 2026?
+    top_k: 3
+  - query: Are there official Apple announcements or credible supply-chain reports?
+    top_k: 3
+  - query: What evidence suggests no new Apple TV release by the deadline?
+    top_k: 3
+
+tags:
+  - oracleproto
+  - apple
+  - product-release
+  - forecast-data

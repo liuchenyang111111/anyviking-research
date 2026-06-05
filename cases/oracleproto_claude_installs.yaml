@@ -1,0 +1,55 @@
+id: oracleproto_claude_installs
+title: OracleProto case: Claude AI chatbot installs ranking
+question: Where will Claude rank by installs for March 2026, among AI chatbots?
+
+source:
+  name: OracleProto
+  url: https://huggingface.co/datasets/MaYiding/OracleProto
+  original_id: 69a6d48ee78a390068a18760
+
+forecast:
+  choice_type: single
+  question_type: multiple_choice
+  event: Where will Claude rank by installs for March 2026, among AI chatbots?
+  options:
+    - 1st
+    - 2nd
+    - 3rd
+    - 4th
+    - 5th
+    - 6th
+    - 7th
+    - 8th
+  end_time: 2026-04-02
+
+queries:
+  - Claude app installs March 2026 AI chatbots ranking
+  - Claude mobile app downloads March 2026 ranking
+  - AI chatbot app installs Claude ChatGPT Gemini March 2026
+  - Appfigures Sensor Tower Claude installs March 2026
+
+search:
+  max_results: 6
+  freshness: month
+  language: en
+  content_types:
+    - web
+    - news
+
+storage:
+  output_dir: data/cases/oracleproto_claude_installs
+  target_uri: viking://resources/forecast/oracleproto/claude-installs
+
+retrieval_checks:
+  - query: What sources report Claude installs or AI chatbot install rankings for March 2026?
+    top_k: 3
+  - query: Which competing AI chatbot apps are compared with Claude?
+    top_k: 3
+  - query: What data provider or ranking method is used for app install comparisons?
+    top_k: 3
+
+tags:
+  - oracleproto
+  - ai
+  - app-ranking
+  - forecast-data

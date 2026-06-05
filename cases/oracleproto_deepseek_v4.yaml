@@ -1,0 +1,49 @@
+id: oracleproto_deepseek_v4
+title: OracleProto case: DeepSeek V4 release
+question: Will DeepSeek release V4 in March 2026?
+
+source:
+  name: OracleProto
+  url: https://huggingface.co/datasets/MaYiding/OracleProto
+  original_id: 69a830e529c5bb005eeeb104
+
+forecast:
+  choice_type: single
+  question_type: yes_no
+  event: Will DeepSeek release V4 in March 2026?
+  options:
+    - Yes
+    - No
+  end_time: 2026-04-03
+
+queries:
+  - DeepSeek V4 March 2026 release
+  - DeepSeek V4 model announcement March 2026
+  - DeepSeek latest model roadmap V4
+  - DeepSeek official release V4
+
+search:
+  max_results: 6
+  freshness: month
+  language: en
+  content_types:
+    - web
+    - news
+
+storage:
+  output_dir: data/cases/oracleproto_deepseek_v4
+  target_uri: viking://resources/forecast/oracleproto/deepseek-v4
+
+retrieval_checks:
+  - query: What public evidence discusses a possible DeepSeek V4 release in March 2026?
+    top_k: 3
+  - query: Are there official DeepSeek announcements or credible roadmap signals?
+    top_k: 3
+  - query: What evidence argues against a DeepSeek V4 release in March 2026?
+    top_k: 3
+
+tags:
+  - oracleproto
+  - ai
+  - model-release
+  - forecast-data
