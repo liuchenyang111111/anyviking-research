@@ -1,26 +1,22 @@
 id: oracleproto_claude_installs
-title: OracleProto case: Claude AI chatbot installs ranking
+title: "OracleProto case: Claude AI chatbot installs ranking"
+question_type: multiple_choice
 question: Where will Claude rank by installs for March 2026, among AI chatbots?
+options:
+  - 1st
+  - 2nd
+  - 3rd
+  - 4th
+  - 5th
+  - 6th
+  - 7th
+  - 8th
+cutoff_date: "2026-04-02"
 
 source:
   name: OracleProto
   url: https://huggingface.co/datasets/MaYiding/OracleProto
   original_id: 69a6d48ee78a390068a18760
-
-forecast:
-  choice_type: single
-  question_type: multiple_choice
-  event: Where will Claude rank by installs for March 2026, among AI chatbots?
-  options:
-    - 1st
-    - 2nd
-    - 3rd
-    - 4th
-    - 5th
-    - 6th
-    - 7th
-    - 8th
-  end_time: 2026-04-02
 
 queries:
   - Claude app installs March 2026 AI chatbots ranking

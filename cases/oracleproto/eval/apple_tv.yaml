@@ -1,20 +1,16 @@
 id: oracleproto_apple_tv
-title: OracleProto case: Apple TV product release
+title: "OracleProto case: Apple TV product release"
+question_type: yes_no
 question: Will Apple release a new version of the Apple TV by March 31, 2026?
+options:
+  - Yes
+  - No
+cutoff_date: "2026-03-31"
 
 source:
   name: OracleProto
   url: https://huggingface.co/datasets/MaYiding/OracleProto
   original_id: 69a2e39e5692ef005cdbf298
-
-forecast:
-  choice_type: single
-  question_type: yes_no
-  event: Will Apple release a new version of the Apple TV by March 31, 2026?
-  options:
-    - Yes
-    - No
-  end_time: 2026-03-31
 
 queries:
   - Apple TV new version March 2026 release

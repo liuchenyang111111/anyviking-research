@@ -19,9 +19,16 @@ from anyviking_research.workflows.fetch_web import (
     default_output_dir,
     write_web_search_output,
 )
+from anyviking_research.workflows.evolve_skill import evolve_skill
+from anyviking_research.workflows.forecast import (
+    OpenAICompatiblePredictor,
+    forecast_case,
+)
+from anyviking_research.workflows.run_case import run_case
 
 DEFAULT_OPENVIKING_URL = "http://127.0.0.1:1933"
 DEFAULT_ANYSEARCH_URL = "https://api.anysearch.com"
+DEFAULT_LLM_BASE_URL = "https://api.openai.com/v1"
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -123,6 +130,181 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Do not run ov wait after import",
     )
+
+    run_case_parser = subparsers.add_parser("run-case", help="Run a reusable YAML collection case")
+    run_case_parser.add_argument("case", help="Path to a case YAML file")
+    run_case_parser.add_argument(
+        "--anysearch-url",
+        default=_default_anysearch_url(),
+        help="AnySearch API URL",
+    )
+    run_case_parser.add_argument(
+        "--openviking-url",
+        default=_default_openviking_url(),
+        help="OpenViking server URL for retrieval checks",
+    )
+    run_case_parser.add_argument("--timeout", type=float, default=60.0)
+    run_case_parser.add_argument(
+        "--log",
+        default="data/run_logs/runs.jsonl",
+        help="JSONL run log path",
+    )
+    run_case_parser.add_argument(
+        "--skip-import",
+        action="store_true",
+        help="Save local files only; do not import into OpenViking",
+    )
+    run_case_parser.add_argument(
+        "--skip-checks",
+        action="store_true",
+        help="Do not run retrieval checks after import",
+    )
+    run_case_parser.add_argument(
+        "--no-resource-wait",
+        action="store_true",
+        help="Do not pass --wait to ov add-resource",
+    )
+    run_case_parser.add_argument(
+        "--no-queue-wait",
+        action="store_true",
+        help="Do not run ov wait after import",
+    )
+    run_case_parser.add_argument(
+        "--mode",
+        choices=("find", "search"),
+        default="find",
+        help="OpenViking retrieval endpoint to call for checks",
+    )
+
+    evolve_skill_parser = subparsers.add_parser(
+        "evolve-skill",
+        help="Generate skill-pattern suggestions from run logs",
+    )
+    evolve_skill_parser.add_argument(
+        "--log",
+        default="data/run_logs/runs.jsonl",
+        help="JSONL run log path",
+    )
+    evolve_skill_parser.add_argument(
+        "--output",
+        default="data/skill_evolution",
+        help="Output directory for generated suggestions",
+    )
+
+    forecast_parser = subparsers.add_parser("forecast", help="Run a forecast case and score the prediction")
+    forecast_parser.add_argument("case", help="Path to a forecast case YAML file")
+    forecast_parser.add_argument(
+        "--answer",
+        default=None,
+        help="Answer JSON path. Default: <case>.answer.json",
+    )
+    forecast_parser.add_argument(
+        "--anysearch-url",
+        default=_default_anysearch_url(),
+        help="AnySearch API URL",
+    )
+    forecast_parser.add_argument(
+        "--openviking-url",
+        default=_default_openviking_url(),
+        help="OpenViking server URL for retrieval",
+    )
+    forecast_parser.add_argument("--timeout", type=float, default=60.0)
+    forecast_parser.add_argument(
+        "--llm-base-url",
+        default=_default_llm_base_url(),
+        help="OpenAI-compatible base URL",
+    )
+    forecast_parser.add_argument(
+        "--llm-api-key",
+        default=os.environ.get("ANYVIKING_LLM_API_KEY") or os.environ.get("OPENAI_API_KEY"),
+        help="LLM API key. Defaults to ANYVIKING_LLM_API_KEY or OPENAI_API_KEY.",
+    )
+    forecast_parser.add_argument(
+        "--llm-model",
+        default=os.environ.get("ANYVIKING_LLM_MODEL", "gpt-4o-mini"),
+        help="OpenAI-compatible model name",
+    )
+    forecast_parser.add_argument(
+        "--run-root",
+        default="data/runs",
+        help="Directory for trajectory and prediction files",
+    )
+    forecast_parser.add_argument(
+        "--skip-import",
+        action="store_true",
+        help="Save files and forecast from local evidence only; do not import into OpenViking",
+    )
+    forecast_parser.add_argument(
+        "--skip-score",
+        action="store_true",
+        help="Do not read the answer file or compute scores",
+    )
+    forecast_parser.add_argument(
+        "--no-resource-wait",
+        action="store_true",
+        help="Do not pass --wait to ov add-resource",
+    )
+    forecast_parser.add_argument(
+        "--no-queue-wait",
+        action="store_true",
+        help="Do not run ov wait after import",
+    )
+    forecast_parser.add_argument(
+        "--mode",
+        choices=("find", "search"),
+        default="find",
+        help="OpenViking retrieval endpoint to call",
+    )
+    forecast_parser.add_argument("--max-prompt-evidence", type=int, default=6)
+    forecast_parser.add_argument(
+        "--baseline-mode",
+        choices=("anyviking", "no-retrieval", "naive-search"),
+        default="anyviking",
+        help="Forecast evaluation mode. anyviking uses case queries and OpenViking retrieval.",
+    )
+    forecast_parser.add_argument(
+        "--baseline-group",
+        default=None,
+        help="Optional group name written to trajectory, for example anyviking_candidate.",
+    )
+    forecast_parser.add_argument(
+        "--candidate-dir",
+        default=None,
+        help="Optional evolution candidate directory to apply before publishing.",
+    )
+
+    evolve = subparsers.add_parser("evolve", help="Manage forecast-driven skill evolution")
+    evolve_subparsers = evolve.add_subparsers(dest="evolve_command", required=True)
+    evolve_collect = evolve_subparsers.add_parser("collect", help="Collect forecast trajectories")
+    evolve_collect.add_argument("--runs", default="data/runs", help="Run directory root")
+    evolve_collect.add_argument("--output", default="data/evolution/collected.json")
+    evolve_baselines = evolve_subparsers.add_parser("baselines", help="Write baseline metrics from eval trajectories")
+    evolve_baselines.add_argument("--runs", default="data/runs", help="Run directory root")
+    evolve_baselines.add_argument("--output", default="data/evolution/baselines.json")
+    evolve_propose = evolve_subparsers.add_parser("propose", help="Generate a reviewable evolution candidate")
+    evolve_propose.add_argument("--runs", default="data/runs", help="Run directory root")
+    evolve_propose.add_argument("--output", default="data/evolution/candidates")
+    evolve_validate = evolve_subparsers.add_parser("validate", help="Validate a candidate from summary data")
+    evolve_validate.add_argument("candidate", help="Candidate directory")
+    evolve_validate.add_argument("--output", default=None, help="Validation output path")
+    evolve_validate.add_argument(
+        "--baseline",
+        default=None,
+        help="Optional JSON with no_retrieval, naive_search, anyviking_baseline, and anyviking_candidate metrics",
+    )
+    evolve_publish = evolve_subparsers.add_parser("publish", help="Publish a validated candidate")
+    evolve_publish.add_argument("candidate", help="Candidate directory")
+    evolve_publish.add_argument("--skill-dir", default="skills/anyviking-research")
+    evolve_run = evolve_subparsers.add_parser("run", help="Collect and propose from existing trajectories")
+    evolve_run.add_argument("--runs", default="data/runs", help="Run directory root")
+    evolve_run.add_argument("--output", default="data/evolution/candidates")
+    evolve_iterate = evolve_subparsers.add_parser("iterate", help="Run one local propose/validate iteration")
+    evolve_iterate.add_argument("--rounds", type=int, default=1)
+    evolve_iterate.add_argument("--runs", default="data/runs", help="Run directory root")
+    evolve_iterate.add_argument("--output", default="data/evolution/candidates")
+    evolve_iterate.add_argument("--baseline", default=None, help="Optional baseline metrics JSON")
+    evolve_iterate.add_argument("--publish", action="store_true", help="Publish when validation passes")
+    evolve_iterate.add_argument("--skill-dir", default="skills/anyviking-research")
 
     search = subparsers.add_parser("search", help="Run semantic retrieval with OpenViking")
     search.add_argument("query", help="Natural-language question")
@@ -273,6 +455,196 @@ def main(argv: list[str] | None = None) -> int:
         if not args.no_queue_wait:
             return _run_ov(["wait"])
         return 0
+
+    if args.command == "run-case":
+        connector = AnySearchConnector(
+            base_url=args.anysearch_url,
+            timeout=args.timeout,
+        )
+
+        def importer(markdown_dir: Path, target_uri: str) -> int:
+            command = ["add-resource", str(markdown_dir), "--to", target_uri]
+            if not args.no_resource_wait:
+                command.append("--wait")
+            exit_code = _run_ov(command)
+            if exit_code != 0:
+                return exit_code
+            if not args.no_queue_wait:
+                return _run_ov(["wait"])
+            return 0
+
+        retriever = OpenVikingRetriever(
+            base_url=args.openviking_url,
+            mode=args.mode,
+            timeout=args.timeout,
+        )
+
+        def searcher(query: str, scope: str, top_k: int) -> list[SearchResult]:
+            results = retriever.search(query, scope=scope, top_k=max(top_k * 5, top_k))
+            return [result for result in results if not _is_generated_summary(result.uri)][:top_k]
+
+        try:
+            result = run_case(
+                args.case,
+                connector=connector,
+                importer=None if args.skip_import else importer,
+                searcher=None if args.skip_checks or args.skip_import else searcher,
+                log_path=args.log,
+                skip_import=args.skip_import,
+                skip_checks=args.skip_checks or args.skip_import,
+            )
+        except (OSError, RuntimeError, ValueError) as exc:
+            print(str(exc), file=sys.stderr)
+            return 2
+
+        _print_case_result(result)
+        return 0 if result.success else 2
+
+    if args.command == "evolve-skill":
+        try:
+            output = evolve_skill(args.log, args.output)
+        except (OSError, ValueError) as exc:
+            print(str(exc), file=sys.stderr)
+            return 2
+
+        print(f"Read run log: {args.log}")
+        print(f"Runs: {output.run_count}")
+        print(f"Successful runs: {output.successful_count}")
+        print(f"Summary: {output.summary_path}")
+        print(f"Generated patterns: {output.patterns_path}")
+        return 0
+
+    if args.command == "forecast":
+        if args.max_prompt_evidence <= 0:
+            print("max-prompt-evidence must be greater than 0", file=sys.stderr)
+            return 2
+        if not args.skip_score and args.answer is not None and not Path(args.answer).exists():
+            print(f"Answer file does not exist: {args.answer}", file=sys.stderr)
+            return 2
+        if not args.llm_api_key:
+            print(
+                "Missing LLM API key. Set ANYVIKING_LLM_API_KEY or OPENAI_API_KEY, "
+                "or pass --llm-api-key.",
+                file=sys.stderr,
+            )
+            return 2
+
+        connector = AnySearchConnector(
+            base_url=args.anysearch_url,
+            timeout=args.timeout,
+        )
+
+        def importer(markdown_dir: Path, target_uri: str) -> int:
+            command = ["add-resource", str(markdown_dir), "--to", target_uri]
+            if not args.no_resource_wait:
+                command.append("--wait")
+            exit_code = _run_ov(command)
+            if exit_code != 0:
+                return exit_code
+            if not args.no_queue_wait:
+                return _run_ov(["wait"])
+            return 0
+
+        retriever = OpenVikingRetriever(
+            base_url=args.openviking_url,
+            mode=args.mode,
+            timeout=args.timeout,
+        )
+
+        def searcher(query: str, scope: str, top_k: int) -> list[SearchResult]:
+            results = retriever.search(query, scope=scope, top_k=max(top_k * 5, top_k))
+            return [result for result in results if not _is_generated_summary(result.uri)][:top_k]
+
+        predictor = OpenAICompatiblePredictor(
+            base_url=args.llm_base_url,
+            api_key=args.llm_api_key,
+            model=args.llm_model,
+            timeout=args.timeout,
+        )
+        try:
+            result = forecast_case(
+                args.case,
+                connector=connector,
+                predictor=predictor,
+                importer=None if args.skip_import else importer,
+                searcher=None if args.skip_import else searcher,
+                answer_path=args.answer,
+                run_root=args.run_root,
+                skip_import=args.skip_import,
+                skip_score=args.skip_score,
+                max_prompt_evidence=args.max_prompt_evidence,
+                baseline_mode=args.baseline_mode,
+                baseline_group=args.baseline_group,
+                candidate_dir=args.candidate_dir,
+            )
+        except (OSError, RuntimeError, ValueError) as exc:
+            print(str(exc), file=sys.stderr)
+            return 2
+
+        _print_forecast_result(result)
+        return 0 if result.success else 2
+
+    if args.command == "evolve":
+        from anyviking_research.workflows.evolve import (
+            collect_trajectories,
+            iterate_once,
+            propose_candidate,
+            publish_candidate,
+            validate_candidate,
+            write_baseline_summary,
+        )
+
+        try:
+            if args.evolve_command == "collect":
+                output = collect_trajectories(args.runs, args.output)
+                print(f"Collected trajectories: {output.trajectory_count}")
+                print(f"Output: {output.output_path}")
+                return 0
+            if args.evolve_command == "baselines":
+                output = write_baseline_summary(args.runs, args.output)
+                print(f"Baseline groups: {', '.join(output.groups) if output.groups else '(none)'}")
+                print(f"Output: {output.output_path}")
+                return 0
+            if args.evolve_command == "propose":
+                output = propose_candidate(args.runs, args.output)
+                print(f"Candidate: {output.candidate_dir}")
+                print(f"Candidate summary: {output.candidate_path}")
+                return 0
+            if args.evolve_command == "validate":
+                output = validate_candidate(args.candidate, args.output, baseline_path=args.baseline)
+                print(f"Validation: {output.validation_path}")
+                print(f"Passed: {output.passed}")
+                return 0 if output.passed else 2
+            if args.evolve_command == "publish":
+                output = publish_candidate(args.candidate, args.skill_dir)
+                print(f"Published: {output.published}")
+                print(f"Skill dir: {output.skill_dir}")
+                return 0 if output.published else 2
+            if args.evolve_command == "run":
+                output = propose_candidate(args.runs, args.output)
+                print(f"Candidate: {output.candidate_dir}")
+                print("Review and validate before publishing.")
+                return 0
+            if args.evolve_command == "iterate":
+                if args.rounds != 1:
+                    print("Only --rounds 1 is currently supported.", file=sys.stderr)
+                    return 2
+                output = iterate_once(
+                    args.runs,
+                    args.output,
+                    baseline_path=args.baseline,
+                    publish=args.publish,
+                    skill_dir=args.skill_dir,
+                )
+                print(f"Candidate: {output.candidate.candidate_dir}")
+                print(f"Validation: {output.validation.validation_path}")
+                print(f"Passed: {output.validation.passed}")
+                if output.publish is not None:
+                    print(f"Published: {output.publish.published}")
+                return 0 if output.validation.passed else 2
+        except (OSError, ValueError) as exc:
+            print(str(exc), file=sys.stderr)
+            return 2
 
     if args.command == "search":
         retriever = OpenVikingRetriever(
@@ -514,6 +886,10 @@ def _default_anysearch_url() -> str:
     return os.environ.get("ANYSEARCH_API_URL", DEFAULT_ANYSEARCH_URL)
 
 
+def _default_llm_base_url() -> str:
+    return os.environ.get("ANYVIKING_LLM_BASE_URL") or os.environ.get("OPENAI_BASE_URL") or DEFAULT_LLM_BASE_URL
+
+
 def _web_response_to_jsonable(response) -> dict[str, object]:
     return {
         "query": response.query,
@@ -540,6 +916,44 @@ def _print_web_results(query: str, results) -> None:
         elif result.content:
             preview = result.content.replace("\n", " ")[:240]
             print(f"   Content: {preview}")
+
+
+def _print_case_result(result) -> None:
+    print(f"Case: {result.case.id}")
+    print(f"Title: {result.case.title}")
+    print(f"Question: {result.case.question}")
+    print(f"Search results: {result.search_result_count}")
+    print(f"Markdown files: {result.markdown_count}")
+    print(f"Markdown directory: {result.output.markdown_dir}")
+    print(f"Evidence pack: {result.evidence_pack_path}")
+    print(f"Target URI: {result.case.target_uri}")
+    print(f"Imported: {result.imported}")
+    if result.import_exit_code is not None:
+        print(f"Import exit code: {result.import_exit_code}")
+    if result.retrieval_checks:
+        passed = sum(1 for check in result.retrieval_checks if check.passed)
+        print(f"Retrieval checks: {passed}/{len(result.retrieval_checks)} passed")
+    else:
+        print("Retrieval checks: skipped")
+    print(f"Run log: {result.log_path}")
+
+
+def _print_forecast_result(result) -> None:
+    print(f"Case: {result.case.id}")
+    print(f"Question: {result.case.question}")
+    print(f"Markdown files: {len(result.output.markdown_files)}")
+    print(f"Target URI: {result.case.target_uri}")
+    print(f"Imported: {result.imported}")
+    print(f"Predicted answer: {result.prediction.predicted_answer}")
+    print("Probabilities:")
+    for option, probability in result.prediction.probabilities.items():
+        print(f"- {option}: {probability:.4f}")
+    if result.score is not None:
+        print(f"Correct: {result.score.correct}")
+        print(f"Brier: {result.score.brier:.4f}")
+    else:
+        print("Score: skipped")
+    print(f"Trajectory: {result.trajectory_path}")
 
 
 def _find_ov_executable() -> str | None:

@@ -1,20 +1,16 @@
 id: oracleproto_deepseek_v4
-title: OracleProto case: DeepSeek V4 release
+title: "OracleProto case: DeepSeek V4 release"
+question_type: yes_no
 question: Will DeepSeek release V4 in March 2026?
+options:
+  - Yes
+  - No
+cutoff_date: "2026-04-03"
 
 source:
   name: OracleProto
   url: https://huggingface.co/datasets/MaYiding/OracleProto
   original_id: 69a830e529c5bb005eeeb104
-
-forecast:
-  choice_type: single
-  question_type: yes_no
-  event: Will DeepSeek release V4 in March 2026?
-  options:
-    - Yes
-    - No
-  end_time: 2026-04-03
 
 queries:
   - DeepSeek V4 March 2026 release

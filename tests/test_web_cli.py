@@ -8,6 +8,7 @@ from unittest.mock import patch
 
 from anyviking_research.cli import main
 from anyviking_research.connectors.base import WebSearchResponse, WebSearchResult
+from anyviking_research.retrievers.base import SearchResult
 
 
 class FakeAnySearchConnector:
@@ -174,6 +175,142 @@ class WebCliTests(unittest.TestCase):
 
         self.assertEqual(exit_code, 2)
         self.assertEqual(commands, [])
+
+    def test_run_case_can_skip_import_and_checks(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            case_path = root / "case.yaml"
+            output_dir = root / "case-output"
+            log_path = root / "runs.jsonl"
+            case_path.write_text(
+                f"""
+id: cli_case
+title: CLI Case
+question: Can the CLI run a case?
+queries:
+  - demo query
+storage:
+  output_dir: {output_dir.as_posix()}
+  target_uri: viking://resources/cli-case
+""".strip(),
+                encoding="utf-8",
+            )
+
+            with patch("anyviking_research.cli.AnySearchConnector", FakeAnySearchConnector):
+                with redirect_stdout(StringIO()):
+                    exit_code = main(
+                        [
+                            "run-case",
+                            str(case_path),
+                            "--skip-import",
+                            "--log",
+                            str(log_path),
+                        ]
+                    )
+            evidence_pack_exists = (output_dir / "evidence_pack.md").exists()
+            log_exists = log_path.exists()
+
+        self.assertEqual(exit_code, 0)
+        self.assertTrue(evidence_pack_exists)
+        self.assertTrue(log_exists)
+
+    def test_run_case_runs_import_and_retrieval_checks(self) -> None:
+        commands: list[list[str]] = []
+
+        class FakeOpenVikingRetriever:
+            def __init__(self, **kwargs) -> None:
+                pass
+
+            def search(self, query: str, scope: str | None = None, top_k: int = 5):
+                return [
+                    SearchResult(
+                        title="Result",
+                        uri="viking://resources/cli-case/result.md",
+                        snippet="Snippet",
+                        source="openviking",
+                    )
+                ]
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            case_path = root / "case.yaml"
+            output_dir = root / "case-output"
+            log_path = root / "runs.jsonl"
+            case_path.write_text(
+                f"""
+id: cli_case
+title: CLI Case
+question: Can the CLI run a case?
+queries:
+  - demo query
+storage:
+  output_dir: {output_dir.as_posix()}
+  target_uri: viking://resources/cli-case
+retrieval_checks:
+  - query: What did it find?
+    top_k: 1
+""".strip(),
+                encoding="utf-8",
+            )
+
+            with patch("anyviking_research.cli.AnySearchConnector", FakeAnySearchConnector):
+                with patch("anyviking_research.cli.OpenVikingRetriever", FakeOpenVikingRetriever):
+                    with patch("anyviking_research.cli._run_ov", lambda arguments: commands.append(arguments) or 0):
+                        with redirect_stdout(StringIO()):
+                            exit_code = main(
+                                [
+                                    "run-case",
+                                    str(case_path),
+                                    "--log",
+                                    str(log_path),
+                                ]
+                            )
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(commands[0][0], "add-resource")
+        self.assertEqual(commands[0][2:], ["--to", "viking://resources/cli-case", "--wait"])
+        self.assertEqual(commands[1], ["wait"])
+
+    def test_evolve_skill_writes_outputs(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            log_path = root / "runs.jsonl"
+            output_dir = root / "skill_evolution"
+            log_path.write_text(
+                json.dumps(
+                    {
+                        "case_id": "oracleproto_demo",
+                        "queries": ["demo query"],
+                        "search": {"freshness": "month", "language": "en", "content_types": ["web"]},
+                        "tags": ["oracleproto"],
+                        "target_uri": "viking://resources/forecast/oracleproto/demo",
+                        "retrieval_checks": [{"passed": True}],
+                        "retrieval_passed": 1,
+                        "success": True,
+                    },
+                    ensure_ascii=False,
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            with redirect_stdout(StringIO()):
+                exit_code = main(
+                    [
+                        "evolve-skill",
+                        "--log",
+                        str(log_path),
+                        "--output",
+                        str(output_dir),
+                    ]
+                )
+
+            summary_exists = (output_dir / "summary.json").exists()
+            patterns_exists = (output_dir / "generated_patterns.md").exists()
+
+        self.assertEqual(exit_code, 0)
+        self.assertTrue(summary_exists)
+        self.assertTrue(patterns_exists)
 
 
 if __name__ == "__main__":

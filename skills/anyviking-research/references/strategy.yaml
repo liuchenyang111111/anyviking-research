@@ -1,0 +1,31 @@
+version: 0.1.0
+description: Machine-readable search and forecast strategy hints for AnyViking agents.
+
+default_forecast:
+  content_types:
+    - web
+    - news
+  max_prompt_evidence: 6
+  retrieval_top_k: 3
+
+query_templates:
+  model_release:
+    - "{product} official announcement"
+    - "{product} release notes"
+    - "{product} roadmap"
+  product_release:
+    - "{product} official announcement"
+    - "{product} launch date"
+    - "{product} supply chain report"
+  app_ranking:
+    - "{app} installs ranking"
+    - "{app} mobile downloads ranking"
+    - "{app} Sensor Tower Appfigures"
+
+validation:
+  required_baselines:
+    - no_retrieval
+    - naive_search
+    - anyviking_baseline
+    - anyviking_candidate
+  publish_gate: candidate_mean_brier_must_not_be_worse

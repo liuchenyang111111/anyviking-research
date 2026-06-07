@@ -14,13 +14,20 @@ It does not search or index by itself. The actual work is done by the installed 
 1. If environment state is unclear, run `anyviking doctor`.
 2. If the user only wants web results, read `references/commands.md`.
 3. If the user wants data saved or imported, read `references/workflow.md`.
-4. If a command fails, read `references/troubleshooting.md`.
+4. If the user wants a repeatable research or forecast-data collection setup, use `anyviking run-case`.
+5. If the user wants a scored forecast case, use `anyviking forecast`.
+6. If the user wants to improve this workflow from trajectories, use `anyviking evolve`.
+7. If a command fails, read `references/troubleshooting.md`.
 
 ## Choose The Command
 
 - Use `anyviking search-web` to search only.
 - Use `anyviking fetch-web` to save web results as local files.
 - Use `anyviking sync` to save web results and import them into OpenViking.
+- Use `anyviking run-case` when the user has a YAML case or wants a repeatable collection template.
+- Use `anyviking forecast` when the case has options and an answer file for scoring.
+- Use `anyviking evolve collect/propose/validate/publish` to generate and publish reviewed workflow improvements.
+- Use `anyviking evolve-skill` to generate reviewable workflow suggestions from local run logs.
 - Use `anyviking import-local` when the user already has local markdown files.
 - Use `anyviking search` when the user has a known `viking://` scope.
 
@@ -28,6 +35,8 @@ It does not search or index by itself. The actual work is done by the installed 
 
 - Keep generated files under `data/`, `reports/`, or `workspace/`.
 - Do not commit `.env`, `config/ov.conf`, `config/ovcli.conf`, `data/`, `reports/`, or `workspace/`.
+- Do not put answer files into prompts. They are for scoring only.
+- Use `cases/oracleproto/train/` for proposing improvements and `cases/oracleproto/eval/` for validation.
 - Prefer `--documents-only` when the user wants source documents instead of OpenViking-generated summaries.
 - If `anyviking` is not on PATH, try `.\.venv\Scripts\anyviking.exe` on Windows or `.venv/bin/anyviking` on Linux/macOS.
 

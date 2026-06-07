@@ -9,10 +9,13 @@ include install.ps1
 include install.sh
 recursive-include config *.example
 include docs/architecture.md
+include docs/cases.md
 include docs/cli_reference.md
 include docs/configuration.md
 include docs/development.md
+include docs/skill_evolution.md
 include docs/troubleshooting.md
+recursive-include cases *.md *.yaml *.json *.txt
 recursive-include skills *.md *.yaml
 recursive-include scripts *.ps1 *.sh
 recursive-include tests *.py
